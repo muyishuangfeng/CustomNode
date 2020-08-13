@@ -14,3 +14,9 @@ const val REQUEST_ADD_NODE_CODE = 2
 
 //添加属性
 const val PARAM_ARTICLE = "PARAM_ARTICLE"
+//添加属性
+const val TARGET_ID = "TARGET_ID"
+//添加属性
+const val TARGET_APP_KEY = "TARGET_APP_KEY"
+//添加属性
+const val CONV_TITLE = "CONV_TITLE"
