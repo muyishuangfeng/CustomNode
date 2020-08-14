@@ -52,7 +52,6 @@ class AddNodeActivity : BaseVMActivity<AddNodeViewModel, ActivityAddNodeBinding>
         binding.rlvAddNode.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         mAdapter = AddNodeAdapter().apply {
-            bindToRecyclerView(binding.rlvAddNode)
             mOnItemDeleteListener = {
                 val path = mAdapter.data[it]
                 if (mPhotoList.isNotEmpty()) {
@@ -60,6 +59,7 @@ class AddNodeActivity : BaseVMActivity<AddNodeViewModel, ActivityAddNodeBinding>
                     mAdapter.setNewData(mPhotoList)
                 }
             }
+            binding.rlvAddNode.adapter=mAdapter
 
             addFooterView(LayoutInflater.from(this@AddNodeActivity)
                 .inflate(R.layout.item_add_node_layout, binding.rlvAddNode, false).apply {

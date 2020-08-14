@@ -1,18 +1,13 @@
 package com.yk.silence.customnode.widget.fragment
 
-import android.util.Log
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.fg.BaseVMFragment
 import com.yk.silence.customnode.common.ActivityManager
-import com.yk.silence.customnode.common.PARAM_ARTICLE
-import com.yk.silence.customnode.common.REQUEST_ADD_NODE_CODE
 import com.yk.silence.customnode.databinding.FragmentHomeBinding
-import com.yk.silence.customnode.util.EventBus
 import com.yk.silence.customnode.viewmodel.home.HomeViewModel
 import com.yk.silence.customnode.widget.activity.AddNodeActivity
-import com.yk.silence.customnode.widget.activity.DetailActivity
 import com.yk.silence.customnode.widget.adapter.HomeAdapter
 import com.yk.silence.toolbar.CustomTitleBar
 import kotlinx.android.synthetic.main.include_reload.view.*
@@ -46,7 +41,6 @@ class HomeFragment : BaseVMFragment<HomeViewModel, FragmentHomeBinding>() {
             setOnRefreshListener { mViewModel.getData() }
         }
         mAdapter = HomeAdapter().apply {
-            bindToRecyclerView(mBinding.rlvHome)
             mOnItemClickListener = {
                 val model = mAdapter.data[it]
 
@@ -57,6 +51,7 @@ class HomeFragment : BaseVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 mViewModel.getData()
             }
         }
+        mBinding.rlvHome.adapter=mAdapter
         mBinding.reloadView.btnReload.setOnClickListener {
             mViewModel.getData()
         }

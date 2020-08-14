@@ -1,7 +1,7 @@
 package com.yk.silence.customnode.widget.adapter
 
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.BaseViewHolder
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.common.ActivityManager
 import com.yk.silence.customnode.common.PARAM_ARTICLE
