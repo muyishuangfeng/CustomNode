@@ -2,6 +2,7 @@ package com.yk.silence.customnode.viewmodel.register
 
 import androidx.lifecycle.MutableLiveData
 import com.yk.silence.customnode.base.vm.BaseViewModel
+import com.yk.silence.customnode.model.UserModel
 
 class RegisterViewModel : BaseViewModel() {
 
@@ -13,6 +14,9 @@ class RegisterViewModel : BaseViewModel() {
     //注册结果
     val mRegisterResult = MutableLiveData<Boolean>()
 
+    //登录结果
+    val mLoginResult = MutableLiveData<Boolean>()
+
 
     /**
      * 登录
@@ -22,16 +26,44 @@ class RegisterViewModel : BaseViewModel() {
         launch(
             block = {
                 //val userInfo = mLoginRepository.register(account, password)
-//                mUserRepository.updateUserInfo(userInfo)
-//                EventBus.post(Constants.USER_COLLECT_UPDATED, true)
+                val mUserInfo = UserModel("1", "1")
+                mUserRepository.updateUserInfo(mUserInfo)
                 mSubmitting.value = false
-                mRegisterResult.value = true
             },
             error = {
                 mSubmitting.value = false
-                mRegisterResult.value = false
             }
 
+        )
+    }
+
+    /**
+     * 极光注册
+     */
+    fun jPushRegister(userID: Int) {
+        mRegisterResult.value = false
+        launch(
+            block = {
+                mRegisterResult.value = mLoginRepository.jPushRegister(userID)
+            },
+            error = {
+                mRegisterResult.value = false
+            }
+        )
+    }
+
+    /**
+     * 极光登录
+     */
+    fun jPushLogin(userID: Int) {
+        mLoginResult.value = false
+        launch(
+            block = {
+                mLoginResult.value = mLoginRepository.jPushLogin(userID)
+            },
+            error = {
+                mLoginResult.value = false
+            }
         )
     }
 

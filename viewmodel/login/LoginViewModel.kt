@@ -2,6 +2,7 @@ package com.yk.silence.customnode.viewmodel.login
 
 import androidx.lifecycle.MutableLiveData
 import com.yk.silence.customnode.base.vm.BaseViewModel
+import com.yk.silence.customnode.model.UserModel
 
 class LoginViewModel : BaseViewModel() {
 
@@ -22,16 +23,29 @@ class LoginViewModel : BaseViewModel() {
         launch(
             block = {
                 //val userInfo = mLoginRepository.login(account, password)
-//                mUserRepository.updateUserInfo(userInfo)
-//                EventBus.post(Constants.USER_COLLECT_UPDATED, true)
+                val mUserInfo = UserModel("1", "1")
+                mUserRepository.updateUserInfo(mUserInfo)
                 mSubmitting.value = false
-                mLoginResult.value = true
             },
             error = {
                 mSubmitting.value = false
-                mLoginResult.value = false
             }
 
+        )
+    }
+
+    /**
+     * 极光登录
+     */
+    fun jPushLogin(userID: Int) {
+        mLoginResult.value = false
+        launch(
+            block = {
+                mLoginResult.value = mLoginRepository.jPushLogin(userID)
+            },
+            error = {
+                mLoginResult.value = false
+            }
         )
     }
 

@@ -20,6 +20,7 @@ import com.yk.silence.customnode.impl.OnCameraClickListener
 import com.yk.silence.customnode.ui.ChooseDialogHelper
 import com.yk.silence.customnode.util.CameraUtil
 import com.yk.silence.customnode.util.EventBus
+import com.yk.silence.customnode.viewmodel.home.HomeViewModel
 import com.yk.silence.customnode.viewmodel.node.AddNodeViewModel
 import com.yk.silence.customnode.widget.adapter.AddNodeAdapter
 import com.yk.silence.toolbar.CustomTitleBar

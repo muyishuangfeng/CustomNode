@@ -1,12 +1,15 @@
 package com.yk.silence.customnode.widget.fragment
 
+import android.util.Log
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.fg.BaseVMFragment
 import com.yk.silence.customnode.common.ActivityManager
 import com.yk.silence.customnode.common.PARAM_ARTICLE
+import com.yk.silence.customnode.common.REQUEST_ADD_NODE_CODE
 import com.yk.silence.customnode.databinding.FragmentHomeBinding
+import com.yk.silence.customnode.util.EventBus
 import com.yk.silence.customnode.viewmodel.home.HomeViewModel
 import com.yk.silence.customnode.widget.activity.AddNodeActivity
 import com.yk.silence.customnode.widget.activity.DetailActivity
@@ -65,10 +68,6 @@ class HomeFragment : BaseVMFragment<HomeViewModel, FragmentHomeBinding>() {
         mViewModel.getData()
     }
 
-    override fun onResume() {
-        super.onResume()
-        mViewModel.getData()
-    }
 
     override fun observe() {
         super.observe()
@@ -85,9 +84,8 @@ class HomeFragment : BaseVMFragment<HomeViewModel, FragmentHomeBinding>() {
             mEmptyStatus.observe(viewLifecycleOwner, Observer {
                 mBinding.emptyView.isVisible = it
             })
-
-
         }
+
     }
 
 

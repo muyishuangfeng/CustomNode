@@ -9,8 +9,10 @@ const val REQUEST_CODE_OPEN_PHOTO_ALBUM = 0
 //相机
 const val REQUEST_CODE_TAKE_PHOTO = 1
 
-//添加日志
-const val REQUEST_ADD_NODE_CODE = 2
+//登录状态
+const val USER_LOGIN_STATE_CHANGED = "USER_LOGIN_STATE_CHANGED"
+//添加记录
+const val REQUEST_ADD_NODE_CODE = "REQUEST_ADD_NODE_CODE"
 
 //添加属性
 const val PARAM_ARTICLE = "PARAM_ARTICLE"

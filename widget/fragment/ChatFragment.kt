@@ -11,4 +11,8 @@ class ChatFragment:BaseFragment<FragmentChatBinding>() {
     }
 
     override fun getFragmentID() = R.layout.fragment_chat
+
+    override fun initBinding(mBinding: FragmentChatBinding) {
+        super.initBinding(mBinding)
+    }
 }

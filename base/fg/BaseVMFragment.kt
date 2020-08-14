@@ -3,12 +3,18 @@ package com.yk.silence.customnode.base.fg
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.yk.silence.customnode.base.vm.BaseViewModel
+import com.yk.silence.customnode.common.ActivityManager
+import com.yk.silence.customnode.common.USER_LOGIN_STATE_CHANGED
+import com.yk.silence.customnode.util.EventBus
+import com.yk.silence.customnode.widget.activity.LoginActivity
 
-abstract class BaseVMFragment<VM:BaseViewModel,V:ViewDataBinding>:BaseFragment<V>() {
+abstract class BaseVMFragment<VM : BaseViewModel, V : ViewDataBinding> : BaseFragment<V>() {
 
     protected lateinit var mViewModel: VM
+
     //懒加载
     private var lazyLoaded = false
 
@@ -61,9 +67,27 @@ abstract class BaseVMFragment<VM:BaseViewModel,V:ViewDataBinding>:BaseFragment<V
     }
 
     open fun observe() {
-
+        // 登录失效，跳转登录页
+        mViewModel.loginStatusInvalid.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                EventBus.post(USER_LOGIN_STATE_CHANGED, false)
+                ActivityManager.start(LoginActivity::class.java)
+            }
+        })
     }
 
-
+    /**
+     * 是否登录，如果登录了就执行then，没有登录就直接跳转登录界面
+     * @return true-已登录，false-未登录
+     */
+    fun checkLogin(then: (() -> Unit)? = null): Boolean {
+        return if (mViewModel.loginState()) {
+            then?.invoke()
+            true
+        } else {
+            ActivityManager.start(LoginActivity::class.java)
+            false
+        }
+    }
 
 }

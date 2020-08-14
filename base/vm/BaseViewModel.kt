@@ -1,12 +1,16 @@
 package com.yk.silence.customnode.base.vm
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonParseException
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.common.APP
+import com.yk.silence.customnode.common.USER_LOGIN_STATE_CHANGED
 import com.yk.silence.customnode.ext.showToast
 import com.yk.silence.customnode.net.Exception.ApiException
+import com.yk.silence.customnode.util.EventBus
+import com.yk.silence.customnode.viewmodel.user.UserRepository
 import kotlinx.coroutines.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -16,6 +20,12 @@ typealias Error = suspend (e: Exception) -> Unit
 typealias Cancel = suspend (e: Exception) -> Unit
 
 open class BaseViewModel : ViewModel() {
+
+    //用户信息
+    protected val mUserRepository by lazy { UserRepository() }
+    //登录状态
+    val loginStatusInvalid: MutableLiveData<Boolean> = MutableLiveData()
+
     /**
      * 创建并执行协程
      * @param block 协程中执行
@@ -66,7 +76,10 @@ open class BaseViewModel : ViewModel() {
             is ApiException -> {
                 when (e.code) {
                     1001 -> {//登录失败处理
-
+                        // 登录失效
+                        mUserRepository.clearLoginState()
+                        EventBus.post(USER_LOGIN_STATE_CHANGED, false)
+                        loginStatusInvalid.value = false
                     }
                     -1 -> {
                         // 其他Api错误
@@ -92,4 +105,9 @@ open class BaseViewModel : ViewModel() {
             }
         }
     }
+
+    /**
+     * 登录状态
+     */
+    fun loginState() = mUserRepository.isLogin()
 }

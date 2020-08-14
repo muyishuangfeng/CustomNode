@@ -64,12 +64,24 @@ class RegisterActivity : BaseVMActivity<RegisterViewModel, ActivityRegisterBindi
         mViewModel.run {
             mSubmitting.observe(this@RegisterActivity, Observer {
                 if (it) {
-                    JPushLoginUtil.jPushRegister(1)
+                    mViewModel.jPushRegister(1)
                     showProgressDialog(R.string.text_registering)
                 } else hideProgressDialog()
             })
             mRegisterResult.observe(this@RegisterActivity, Observer {
-                if (it) ActivityManager.finish(RegisterActivity::class.java)
+                if (it) {
+                    ActivityManager.start(MainActivity::class.java)
+                    ActivityManager.finish(RegisterActivity::class.java)
+                } else {
+                    mViewModel.jPushLogin(1)
+                }
+            })
+
+            mLoginResult.observe(this@RegisterActivity, Observer {
+                if (it) {
+                    ActivityManager.start(MainActivity::class.java)
+                    ActivityManager.finish(RegisterActivity::class.java)
+                }
             })
         }
     }

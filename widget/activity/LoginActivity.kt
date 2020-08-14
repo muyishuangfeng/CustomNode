@@ -6,7 +6,6 @@ import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.ac.BaseVMActivity
 import com.yk.silence.customnode.common.ActivityManager
 import com.yk.silence.customnode.databinding.ActivityLoginBinding
-import com.yk.silence.customnode.util.JPushLoginUtil
 import com.yk.silence.customnode.viewmodel.login.LoginViewModel
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -57,13 +56,15 @@ class LoginActivity : BaseVMActivity<LoginViewModel, ActivityLoginBinding>() {
         mViewModel.run {
             mSubmitting.observe(this@LoginActivity, Observer {
                 if (it) {
-                    JPushLoginUtil.login(1)
                     showProgressDialog(R.string.text_logining)
+                    mViewModel.jPushLogin(1)
                 } else hideProgressDialog()
             })
             mLoginResult.observe(this@LoginActivity, Observer {
                 if (it) {
-                    ActivityManager.finish(LoginActivity::class.java)
+                    ActivityManager.start(MainActivity::class.java)
+                } else {
+                    ActivityManager.start(RegisterActivity::class.java)
                 }
             })
         }
