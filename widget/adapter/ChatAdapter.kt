@@ -11,12 +11,11 @@ import com.yk.silence.customnode.R
 import com.yk.silence.customnode.common.MSG_TYPE_RECEIVE
 import com.yk.silence.customnode.common.MSG_TYPE_SEND
 import com.yk.silence.customnode.viewmodel.chat.ChatHelper
-import kotlinx.android.synthetic.main.item_chat_send_layout.view.*
 
 @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
-class ChatAdapter(list: MutableList<Message>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var mList = list
+    var mList: MutableList<Message> = arrayListOf()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -55,10 +54,27 @@ class ChatAdapter(list: MutableList<Message>) : RecyclerView.Adapter<RecyclerVie
                         ChatHelper.sendTextMsg(message, holder, position)
                     }
                     ContentType.image -> {//图片
-
+                        ChatHelper.sendImgMsg(context, message, holder)
                     }
                     ContentType.voice -> {//语音
+                        ChatHelper.sendVoice(context, message, holder, position)
+                    }
+                    else ->
+                        ChatHelper.sendTextMsg(message, holder, position)
 
+                }
+            }
+        } else if (holder is ChatReceiveHolder) {
+            holder.itemView.run {
+                when (message.contentType) {
+                    ContentType.text -> {//文本
+                        ChatHelper.receiveTextMsg(message, holder, position)
+                    }
+                    ContentType.image -> {//图片
+                        ChatHelper.receiveImgMsg(message, holder)
+                    }
+                    ContentType.voice -> {//语音
+                        ChatHelper.receiveVoice(context, message, holder, position)
                     }
                     else ->
                         ContentType.text
@@ -82,6 +98,26 @@ class ChatAdapter(list: MutableList<Message>) : RecyclerView.Adapter<RecyclerVie
             }
             else -> getItemViewType(position)
         }
+    }
+
+
+    /**
+     * 添加发送数据
+     *
+     * @param position
+     * @param model
+     */
+    fun addSendData(model: Message) {
+        mList.add(model)
+        notifyDataSetChanged()
+    }
+
+    /**
+     * 设置数据
+     */
+    fun setList(list: MutableList<Message>) {
+        mList.addAll(list)
+        notifyDataSetChanged()
     }
 
     /**

@@ -7,7 +7,9 @@ import com.yk.silence.customnode.common.ActivityManager
 import com.yk.silence.customnode.common.PARAM_ARTICLE
 import com.yk.silence.customnode.db.HomePictureModel
 import com.yk.silence.customnode.util.glide.GlideUtils
+import com.yk.silence.customnode.util.glide.load
 import com.yk.silence.customnode.widget.activity.DetailActivity
+import kotlinx.android.synthetic.main.item_circle_image_layout.view.*
 import kotlinx.android.synthetic.main.item_home_picture_layout.view.*
 
 class HomePictureAdapter(layoutID: Int = R.layout.item_home_picture_layout) :
@@ -16,14 +18,18 @@ class HomePictureAdapter(layoutID: Int = R.layout.item_home_picture_layout) :
 
     override fun convert(holder: BaseViewHolder, item: HomePictureModel) {
         holder.itemView.run {
-            GlideUtils.loadPathWithCircle(context, item.imgUrl, img_item_home_picture)
+            img_item_home_picture.apply {
+                load(item.imgUrl)
+                transitionName = item.imgUrl
+            }
             setOnClickListener {
                 ActivityManager.start(
                     DetailActivity::class.java, mapOf(
                         PARAM_ARTICLE to item.imgUrl
-                    )
+                    ), img_item_home_picture
                 )
             }
+
         }
     }
 }

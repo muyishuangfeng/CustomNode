@@ -2,8 +2,11 @@ package com.yk.silence.customnode.common
 
 import android.app.Application
 import cn.jpush.im.android.api.JMessageClient
+import com.lzy.ninegrid.NineGridView
 import com.yk.silence.customnode.receiver.NotificationClickEventReceiver
 import com.yk.silence.customnode.util.ProcessHelper
+import com.yk.silence.customnode.util.glide.GlideImageLoader
+
 
 class APP : Application() {
     companion object {
@@ -24,6 +27,7 @@ class APP : Application() {
     private fun init() {
         registerActivityCallbacks()
         initJPush()
+        NineGridView.setImageLoader(GlideImageLoader())
     }
 
 
