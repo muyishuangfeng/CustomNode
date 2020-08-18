@@ -24,7 +24,7 @@ class CircleRepository {
             mAccessList.add(access)
         }
 
-        for (index in 0 until 2) {
+        for (index in 0 until 3) {
             val model = CircleModel()
             model.userName = "Silence潇湘夜雨"
             model.content = "天若有情天亦老"
