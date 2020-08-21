@@ -4,16 +4,19 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.fg.BaseVMFragment
+import com.yk.silence.customnode.common.ActivityManager
 import com.yk.silence.customnode.databinding.FragmentChatBinding
 import com.yk.silence.customnode.db.friend.FriendModel
 import com.yk.silence.customnode.util.ToastUtil
 import com.yk.silence.customnode.viewmodel.friend.FriendViewModel
+import com.yk.silence.customnode.widget.activity.AddFriendActivity
 import com.yk.silence.customnode.widget.adapter.FriendAdapter
 import com.yk.silence.toolbar.CustomTitleBar
 
 class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
 
     private lateinit var mAdapter: FriendAdapter
+    private lateinit var mList: MutableList<FriendModel>
 
     companion object {
         fun newInstance() = ChatFragment()
@@ -31,12 +34,7 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
             }
 
             override fun onRightClick() {
-                val model = FriendModel()
-                model.user_id = "10001"
-                model.user_avatar = "https://nightlesson.oss-cn-hangzhou.aliyuncs.com/0053f885c4fd91f98f.jpg"
-                model.user_name = "木易"
-                model.friend_time = System.currentTimeMillis().toString()
-                mViewModel.addFriend(model)
+                ActivityManager.start(AddFriendActivity::class.java)
             }
         })
         mBinding.srlChat.run {
@@ -47,6 +45,9 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
         mAdapter = FriendAdapter().apply {
             mOnItemClickListener = {
 
+            }
+            mOnItemLongClickListener = {
+                mViewModel.deleteFriend(mList[it])
             }
         }
         mBinding.rlvChat.adapter = mAdapter
@@ -63,6 +64,7 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
         super.observe()
         mViewModel.run {
             mFriendList.observe(viewLifecycleOwner, Observer {
+                mList = it
                 mAdapter.setDiffNewData(it)
             })
 
@@ -75,7 +77,7 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
             })
 
             mFriendState.observe(viewLifecycleOwner, Observer {
-                mAdapter.notifyDataSetChanged()
+                mViewModel.refreshData()
             })
 
         }

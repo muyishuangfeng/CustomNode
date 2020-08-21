@@ -18,8 +18,7 @@ import com.yk.silence.customnode.common.OSS_ACCESS_KEY_SECRET
 import com.yk.silence.customnode.common.OSS_ENDPOINT
 import com.yk.silence.customnode.impl.OnOssResultListener
 
-class OSSHelper {
-
+object OSSHelper {
 
     /**
      * 初始化阿里云
@@ -38,7 +37,6 @@ class OSSHelper {
         conf.maxErrorRetry = 2 // 失败后最大重试次数，默认2次。
         return OSSClient(context, OSS_ENDPOINT, credentialProvider, conf)
     }
-
 
     /**
      * 上传头像

@@ -1,6 +1,7 @@
 package com.yk.silence.customnode.widget.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -16,6 +17,7 @@ class FriendAdapter(
     BaseQuickAdapter<FriendModel, BaseViewHolder>(layoutID) {
 
     var mOnItemClickListener: ((position: Int) -> Unit)? = null
+    var mOnItemLongClickListener: ((position: Int) -> Unit)? = null
 
 
     override fun convert(holder: BaseViewHolder, item: FriendModel) {
@@ -25,7 +27,11 @@ class FriendAdapter(
             setOnClickListener {
                 mOnItemClickListener?.invoke(holder.adapterPosition)
             }
-            GlideUtils.loadPathWithCircle(context,item.user_avatar,img_item_chat_avatar)
+            GlideUtils.loadPathWithCircle(context, item.user_avatar, img_item_chat_avatar)
+            setOnLongClickListener {
+                mOnItemLongClickListener?.invoke(holder.adapterPosition)
+                true
+            }
         }
     }
 
