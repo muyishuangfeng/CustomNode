@@ -9,7 +9,6 @@ import com.yk.silence.customnode.R;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
-import cn.jiguang.api.JCoreInterface;
 
 public class TimeFormat {
 
@@ -43,7 +42,7 @@ public class TimeFormat {
         String oldMinute = dateStr.substring(14, 16);
 
         //当前时间
-        long today = JCoreInterface.getReportTime();//当前时间
+        long today = System.currentTimeMillis();//当前时间
         Date now = new Date(today * 1000);//当前时间
         String nowStr = format(now, mContext.getString(R.string.text_time_format));
 
@@ -156,7 +155,7 @@ public class TimeFormat {
         String oldMinute = dateStr.substring(14, 16);
 
         //当前时间
-        long today = JCoreInterface.getReportTime();//当前时间
+        long today = System.currentTimeMillis();//当前时间
         Date now = new Date(today * 1000);//当前时间
         String nowStr = format(now, mContext.getString(R.string.text_time_format));
 

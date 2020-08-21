@@ -10,10 +10,7 @@ class LoginRepository {
     suspend fun login(username: String, password: String) =
         RetrofitClient.apiService.login(username, password).apiData()
 
-    /**
-     * 极光登录
-     */
-    suspend fun jPushLogin(userId: Int) = LoginHelper.instance.jPushLogin(userId)
+
 
 
 }

@@ -1,18 +1,15 @@
 package com.yk.silence.customnode.viewmodel.friend
 
 import androidx.lifecycle.MutableLiveData
-import cn.jpush.im.android.api.model.Conversation
 import com.yk.silence.customnode.base.vm.BaseViewModel
+import com.yk.silence.customnode.db.friend.FriendModel
 
 class FriendViewModel : BaseViewModel() {
 
     private val mFriendRepository by lazy { FriendRepository() }
 
-    //会话列表
-    val mConversationList = MutableLiveData<List<Conversation>>()
-
-    //会话
-    val mConversation = MutableLiveData<Conversation>()
+    //好友数据
+    var mFriendList = MutableLiveData<MutableList<FriendModel>>()
 
     //刷新
     val mRefreshState = MutableLiveData<Boolean>()
@@ -20,8 +17,8 @@ class FriendViewModel : BaseViewModel() {
     //空状态
     val mEmptyState = MutableLiveData<Boolean>()
 
-    //添加会话状态
-    val mAddConversationState = MutableLiveData<Boolean>()
+    //好友状态
+    val mFriendState = MutableLiveData<Boolean>()
 
     /**
      * 刷新
@@ -31,10 +28,10 @@ class FriendViewModel : BaseViewModel() {
         mEmptyState.value = false
         launch(
             block = {
-                val mCurrentList = mFriendRepository.getData()
-                mConversationList.value = mCurrentList?.toMutableList()
+                val currentList = mFriendRepository.queryFriend()
+                mFriendList.value = currentList
                 mRefreshState.value = false
-                mEmptyState.value = mConversationList.value?.isEmpty()
+                mEmptyState.value = mFriendList.value?.isEmpty()
             },
             error = {
                 mRefreshState.value = false
@@ -44,18 +41,35 @@ class FriendViewModel : BaseViewModel() {
     }
 
     /**
-     * 添加会话
+     * 添加好友
      */
-    fun addConversation(userName: String) {
-        mAddConversationState.value = false
+    fun addFriend(model: FriendModel) {
+        mFriendState.value = false
         launch(
             block = {
-                val currentData = mFriendRepository.addConversation(userName)
-                mConversation.value = currentData
-                mAddConversationState.value = mConversation.value != null
+                mFriendRepository.addFriend(model).apply {
+                    mFriendState.value = true
+                }
             },
             error = {
-                mAddConversationState.value = false
+                mFriendState.value = false
+            }
+        )
+    }
+
+    /**
+     * 删除好友
+     */
+    fun deleteFriend(model: FriendModel) {
+        mFriendState.value = false
+        launch(
+            block = {
+                mFriendRepository.deleteFriend(model).apply {
+                    mFriendState.value = true
+                }
+            },
+            error = {
+                mFriendState.value = false
             }
         )
     }

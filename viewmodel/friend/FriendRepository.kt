@@ -1,14 +1,22 @@
 package com.yk.silence.customnode.viewmodel.friend
 
+import com.yk.silence.customnode.db.friend.FriendModel
+import com.yk.silence.customnode.db.node.RoomHelper
+
 class FriendRepository {
 
     /**
-     * 获取会话列表
+     * 查询好友
      */
-    suspend fun getData() = FriendHelper.getFriendList()
+    suspend fun queryFriend() = RoomHelper.queryFriends()
 
     /**
-     * 添加会话
+     * 删除好友
      */
-    suspend fun addConversation(userName: String) = FriendHelper.addFConversation(userName)
+    suspend fun deleteFriend(model: FriendModel) = RoomHelper.deleteFriend(model)
+
+    /**
+     * 添加好友
+     */
+    suspend fun addFriend(model: FriendModel) = RoomHelper.addFriend(model)
 }

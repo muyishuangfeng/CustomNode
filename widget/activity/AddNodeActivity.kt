@@ -2,25 +2,21 @@ package com.yk.silence.customnode.widget.activity
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.ac.BaseVMActivity
 import com.yk.silence.customnode.common.ActivityManager
-import com.yk.silence.customnode.common.REQUEST_ADD_NODE_CODE
 import com.yk.silence.customnode.common.REQUEST_CODE_OPEN_PHOTO_ALBUM
 import com.yk.silence.customnode.common.REQUEST_CODE_TAKE_PHOTO
 import com.yk.silence.customnode.databinding.ActivityAddNodeBinding
-import com.yk.silence.customnode.db.HomeModel
-import com.yk.silence.customnode.db.HomeNode
-import com.yk.silence.customnode.db.HomePictureModel
+import com.yk.silence.customnode.db.node.HomeModel
+import com.yk.silence.customnode.db.node.HomeNode
+import com.yk.silence.customnode.db.node.HomePictureModel
 import com.yk.silence.customnode.impl.OnCameraClickListener
 import com.yk.silence.customnode.ui.ChooseDialogHelper
 import com.yk.silence.customnode.util.CameraUtil
-import com.yk.silence.customnode.util.EventBus
-import com.yk.silence.customnode.viewmodel.home.HomeViewModel
 import com.yk.silence.customnode.viewmodel.node.AddNodeViewModel
 import com.yk.silence.customnode.widget.adapter.AddNodeAdapter
 import com.yk.silence.toolbar.CustomTitleBar
@@ -35,6 +31,7 @@ class AddNodeActivity : BaseVMActivity<AddNodeViewModel, ActivityAddNodeBinding>
     override fun getLayoutID() = R.layout.activity_add_node
 
     override fun viewModelClass() = AddNodeViewModel::class.java
+
 
     override fun initBinding(binding: ActivityAddNodeBinding) {
         super.initBinding(binding)
@@ -59,8 +56,6 @@ class AddNodeActivity : BaseVMActivity<AddNodeViewModel, ActivityAddNodeBinding>
                     mAdapter.setNewData(mPhotoList)
                 }
             }
-            binding.rlvAddNode.adapter=mAdapter
-
             addFooterView(LayoutInflater.from(this@AddNodeActivity)
                 .inflate(R.layout.item_add_node_layout, binding.rlvAddNode, false).apply {
                     setOnClickListener {
@@ -86,6 +81,7 @@ class AddNodeActivity : BaseVMActivity<AddNodeViewModel, ActivityAddNodeBinding>
                     }
                 })
         }
+        binding.rlvAddNode.adapter = mAdapter
 
     }
 
@@ -137,7 +133,8 @@ class AddNodeActivity : BaseVMActivity<AddNodeViewModel, ActivityAddNodeBinding>
         val mPictures = arrayListOf<HomePictureModel>()
         if (mPhotoList.size ?: 0 > 0) {
             for (index in mPhotoList.indices) {
-                val mPictureModel = HomePictureModel()
+                val mPictureModel =
+                    HomePictureModel()
                 mPictureModel.imgUrl = mPhotoList[index]
                 mPictures.add(mPictureModel)
             }

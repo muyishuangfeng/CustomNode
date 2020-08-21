@@ -2,8 +2,7 @@ package com.yk.silence.customnode.viewmodel.node
 
 import androidx.lifecycle.MutableLiveData
 import com.yk.silence.customnode.base.vm.BaseViewModel
-import com.yk.silence.customnode.db.HomeModel
-import com.yk.silence.customnode.db.HomeNode
+import com.yk.silence.customnode.db.node.HomeNode
 import com.yk.silence.customnode.viewmodel.home.HomeRepository
 
 class AddNodeViewModel : BaseViewModel() {

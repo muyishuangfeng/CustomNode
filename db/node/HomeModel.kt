@@ -1,4 +1,4 @@
-package com.yk.silence.customnode.db
+package com.yk.silence.customnode.db.node
 
 import androidx.room.*
 

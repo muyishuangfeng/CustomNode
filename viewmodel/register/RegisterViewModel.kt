@@ -44,7 +44,6 @@ class RegisterViewModel : BaseViewModel() {
         mRegisterResult.value = false
         launch(
             block = {
-                mRegisterResult.value = mLoginRepository.jPushRegister(userID)
             },
             error = {
                 mRegisterResult.value = false
@@ -59,7 +58,6 @@ class RegisterViewModel : BaseViewModel() {
         mLoginResult.value = false
         launch(
             block = {
-                mLoginResult.value = mLoginRepository.jPushLogin(userID)
             },
             error = {
                 mLoginResult.value = false

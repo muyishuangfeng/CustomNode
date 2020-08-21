@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.yk.silence.customnode.R
-import com.yk.silence.customnode.db.HomeNode
+import com.yk.silence.customnode.db.node.HomeNode
 import com.yk.silence.customnode.util.TimeUtil
 import com.yk.silence.customnode.util.glide.GlideUtils
 import kotlinx.android.synthetic.main.item_home_layout.view.*

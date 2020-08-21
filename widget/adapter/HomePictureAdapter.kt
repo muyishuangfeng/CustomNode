@@ -5,11 +5,9 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.common.ActivityManager
 import com.yk.silence.customnode.common.PARAM_ARTICLE
-import com.yk.silence.customnode.db.HomePictureModel
-import com.yk.silence.customnode.util.glide.GlideUtils
+import com.yk.silence.customnode.db.node.HomePictureModel
 import com.yk.silence.customnode.util.glide.load
 import com.yk.silence.customnode.widget.activity.DetailActivity
-import kotlinx.android.synthetic.main.item_circle_image_layout.view.*
 import kotlinx.android.synthetic.main.item_home_picture_layout.view.*
 
 class HomePictureAdapter(layoutID: Int = R.layout.item_home_picture_layout) :

@@ -2,17 +2,12 @@ package com.yk.silence.customnode.widget.fragment
 
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import cn.jpush.im.android.api.model.Conversation
-import cn.jpush.im.android.api.model.UserInfo
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.fg.BaseVMFragment
-import com.yk.silence.customnode.common.ActivityManager
-import com.yk.silence.customnode.common.CONV_TITLE
-import com.yk.silence.customnode.common.TARGET_ID
 import com.yk.silence.customnode.databinding.FragmentChatBinding
+import com.yk.silence.customnode.db.friend.FriendModel
 import com.yk.silence.customnode.util.ToastUtil
 import com.yk.silence.customnode.viewmodel.friend.FriendViewModel
-import com.yk.silence.customnode.widget.activity.ChatActivity
 import com.yk.silence.customnode.widget.adapter.FriendAdapter
 import com.yk.silence.toolbar.CustomTitleBar
 
@@ -36,7 +31,12 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
             }
 
             override fun onRightClick() {
-                //mViewModel.addConversation("CHAT_USER2")
+                val model = FriendModel()
+                model.user_id = "10001"
+                model.user_avatar = "https://nightlesson.oss-cn-hangzhou.aliyuncs.com/0053f885c4fd91f98f.jpg"
+                model.user_name = "木易"
+                model.friend_time = System.currentTimeMillis().toString()
+                mViewModel.addFriend(model)
             }
         })
         mBinding.srlChat.run {
@@ -46,12 +46,7 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
         }
         mAdapter = FriendAdapter().apply {
             mOnItemClickListener = {
-                val mUserInfo: UserInfo = mAdapter.data[it].targetInfo as UserInfo
-                ActivityManager.start(
-                    ChatActivity::class.java, mapOf(
-                        TARGET_ID to mUserInfo.userName, CONV_TITLE to mAdapter.data[it].title
-                    )
-                )
+
             }
         }
         mBinding.rlvChat.adapter = mAdapter
@@ -67,8 +62,8 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
     override fun observe() {
         super.observe()
         mViewModel.run {
-            mConversationList.observe(viewLifecycleOwner, Observer {
-                mAdapter.setDiffNewData(it as MutableList<Conversation>?)
+            mFriendList.observe(viewLifecycleOwner, Observer {
+                mAdapter.setDiffNewData(it)
             })
 
             mRefreshState.observe(viewLifecycleOwner, Observer {
@@ -78,15 +73,11 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
             mEmptyState.observe(viewLifecycleOwner, Observer {
                 mBinding.emptyView.isVisible = it
             })
-            mConversation.observe(viewLifecycleOwner, Observer {
-                mAdapter.addNewConversation(it)
+
+            mFriendState.observe(viewLifecycleOwner, Observer {
+                mAdapter.notifyDataSetChanged()
             })
-            mAddConversationState.observe(viewLifecycleOwner, Observer {
-                if (it) {
-                    ToastUtil.getInstance().shortToast(requireActivity(), "添加成功")
-                    mViewModel.refreshData()
-                } else ToastUtil.getInstance().shortToast(requireActivity(), "添加失败")
-            })
+
         }
 
     }

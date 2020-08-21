@@ -15,11 +15,12 @@ class WelcomeActivity : BaseVMActivity<BaseViewModel, ActivityWelcomeBinding>() 
 
     override fun initData() {
         super.initData()
-        checkLoginState {
-            window.decorView.postDelayed({
-                ActivityManager.start(MainActivity::class.java)
-                ActivityManager.finish(WelcomeActivity::class.java)
-            }, 1000)
-        }
+        window.decorView.postDelayed({
+            ActivityManager.start(MainActivity::class.java)
+            ActivityManager.finish(WelcomeActivity::class.java)
+        }, 1000)
+//        checkLoginState {
+//
+//        }
     }
 }

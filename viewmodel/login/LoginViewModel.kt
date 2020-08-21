@@ -41,7 +41,6 @@ class LoginViewModel : BaseViewModel() {
         mLoginResult.value = false
         launch(
             block = {
-                mLoginResult.value = mLoginRepository.jPushLogin(userID)
             },
             error = {
                 mLoginResult.value = false

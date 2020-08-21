@@ -1,56 +1,39 @@
 package com.yk.silence.customnode.viewmodel.chat
 
-import cn.jpush.im.android.api.JMessageClient
-import cn.jpush.im.android.api.model.Message
-import com.yk.silence.customnode.common.JPUSH_TARGET_APP_KEY
-import java.io.File
+import com.yk.silence.customnode.im.IMSClientBootstrap
+import com.yk.silence.customnode.im.bean.SingleMessage
+import com.yk.silence.customnode.im.message.MessageProcessor
+import com.yk.silence.customnode.im.message.MessageType
+import java.util.*
+
 
 class ChatRepository {
+
+
     /**
      * 进入聊天
      */
-    suspend fun enterChat(userName: String) {
-        JMessageClient.enterSingleConversation(userName)
+    suspend fun enterChat(userId: String, token: String, hosts: String, appStatus: Int) {
+        IMSClientBootstrap.getInstance().init(userId, token, hosts, appStatus)
     }
+
+
 
 
     /**
-     * 退出聊天
+     * 发送消息
      */
-    suspend fun exitChat() {
-        JMessageClient.exitConversation()
+    suspend fun sendMsg(fromID: String, toID: String, content: String) {
+        val message = SingleMessage()
+        message.msgId = UUID.randomUUID().toString()
+        message.msgType = MessageType.SINGLE_CHAT.msgType
+        message.msgContentType = MessageType.MessageContentType.TEXT.msgContentType
+        message.fromId = fromID
+        message.toId = toID
+        message.timestamp = System.currentTimeMillis()
+        message.content = content
+        MessageProcessor.getInstance().sendMsg(message)
     }
 
-    /**
-     * 获取消息列表
-     */
-    suspend fun getMessageList(mTargetId: String): MutableList<Message> {
-        return JMessageClient.getSingleConversation(mTargetId, JPUSH_TARGET_APP_KEY).allMessage
-    }
 
-    /**
-     * 发送文本
-     */
-    suspend fun createTextMsg(userName: String, content: String): Message {
-        return JMessageClient.createSingleTextMessage(userName, JPUSH_TARGET_APP_KEY, content)
-    }
-
-    /**
-     * 发送图片
-     */
-    suspend fun createImageMsg(userName: String, file: File): Message {
-        return JMessageClient.createSingleImageMessage(userName, JPUSH_TARGET_APP_KEY, file)
-    }
-
-    /**
-     * 发送语音
-     */
-    suspend fun createAudioMsg(userName: String, file: File, duration: Int): Message {
-        return JMessageClient.createSingleVoiceMessage(
-            userName,
-            JPUSH_TARGET_APP_KEY,
-            file,
-            duration
-        )
-    }
 }

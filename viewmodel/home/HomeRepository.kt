@@ -1,7 +1,7 @@
 package com.yk.silence.customnode.viewmodel.home
 
-import com.yk.silence.customnode.db.HomeNode
-import com.yk.silence.customnode.db.RoomHelper
+import com.yk.silence.customnode.db.node.HomeNode
+import com.yk.silence.customnode.db.node.RoomHelper
 
 class HomeRepository {
     /**
