@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.Observer
-import com.alibaba.sdk.android.oss.common.utils.OSSUtils
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.ac.BaseVMActivity
 import com.yk.silence.customnode.common.*
@@ -13,8 +12,11 @@ import com.yk.silence.customnode.db.friend.FriendModel
 import com.yk.silence.customnode.im.CThreadPoolExecutor
 import com.yk.silence.customnode.impl.OnCameraClickListener
 import com.yk.silence.customnode.impl.OnOssResultListener
-import com.yk.silence.customnode.ui.ChooseDialogHelper
+import com.yk.silence.customnode.model.EventModel
+import com.yk.silence.customnode.ui.dialog.ChooseDialogHelper
 import com.yk.silence.customnode.util.CameraUtil
+import com.yk.silence.customnode.util.EventBus
+import com.yk.silence.customnode.util.EventUtil
 import com.yk.silence.customnode.util.ToastUtil
 import com.yk.silence.customnode.util.glide.GlideUtils
 import com.yk.silence.customnode.util.oss.OSSHelper
@@ -99,7 +101,7 @@ class AddFriendActivity : BaseVMActivity<FriendViewModel, ActivityAddFriendBindi
         super.observer()
         mViewModel.run {
             mFriendState.observe(this@AddFriendActivity, Observer {
-                Log.e("TAG", "添加成功")
+                EventUtil.send(EventModel(MSG_CODE_ADD_FRIEND))
                 ActivityManager.finish(AddFriendActivity::class.java)
             })
         }

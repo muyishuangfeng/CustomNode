@@ -1,17 +1,23 @@
 package com.yk.silence.customnode.widget.fragment
 
+import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.fg.BaseVMFragment
 import com.yk.silence.customnode.common.ActivityManager
+import com.yk.silence.customnode.common.MSG_CODE_ADD_FRIEND
 import com.yk.silence.customnode.databinding.FragmentChatBinding
 import com.yk.silence.customnode.db.friend.FriendModel
-import com.yk.silence.customnode.util.ToastUtil
+import com.yk.silence.customnode.impl.OnCommonDialogListener
+import com.yk.silence.customnode.model.EventModel
+import com.yk.silence.customnode.ui.dialog.DialogFragmentHelper
+import com.yk.silence.customnode.util.EventUtil
 import com.yk.silence.customnode.viewmodel.friend.FriendViewModel
 import com.yk.silence.customnode.widget.activity.AddFriendActivity
 import com.yk.silence.customnode.widget.adapter.FriendAdapter
 import com.yk.silence.toolbar.CustomTitleBar
+import org.greenrobot.eventbus.Subscribe
 
 class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
 
@@ -20,6 +26,11 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
 
     companion object {
         fun newInstance() = ChatFragment()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        EventUtil.register(this)
     }
 
     override fun getFragmentID() = R.layout.fragment_chat
@@ -47,7 +58,8 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
 
             }
             mOnItemLongClickListener = {
-                mViewModel.deleteFriend(mList[it])
+                deleteDialog(it)
+
             }
         }
         mBinding.rlvChat.adapter = mAdapter
@@ -80,7 +92,41 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
                 mViewModel.refreshData()
             })
 
-        }
 
+        }
+    }
+
+    @Subscribe
+    public fun onEvent(event: Any) {
+        val mData = event as EventModel
+        if (mData.code == MSG_CODE_ADD_FRIEND) {
+            mViewModel.refreshData()
+        }
+    }
+
+    override fun onDestroy() {
+        EventUtil.unRegister(this)
+        super.onDestroy()
+    }
+
+
+    /**
+     * 删除好友
+     */
+    private fun deleteDialog(position: Int) {
+        DialogFragmentHelper.commonDialog(
+            childFragmentManager,
+            getString(R.string.text_delete_fridend),
+            getString(R.string.text_sure_delete_fridend),
+            2,
+            object : OnCommonDialogListener {
+                override fun onResult() {
+                    mViewModel.deleteFriend(mList[position])
+                }
+
+                override fun onCancel() {
+                }
+
+            })
     }
 }

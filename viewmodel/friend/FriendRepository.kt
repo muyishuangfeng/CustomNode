@@ -19,4 +19,7 @@ class FriendRepository {
      * 添加好友
      */
     suspend fun addFriend(model: FriendModel) = RoomHelper.addFriend(model)
+    
+    
+   
 }

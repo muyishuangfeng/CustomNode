@@ -1,7 +1,6 @@
 package com.yk.silence.customnode.common
 
 import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.widget.AppCompatImageView
@@ -26,7 +25,18 @@ object ActivityManager {
             intent.putExtras(it.key to it.value)
         }
         currentActivity.startActivity(intent)
+    }
 
+    /**
+     * 开始
+     */
+    fun startForResult(
+        clazz: Class<out Activity>,
+        code: Int
+    ) {
+        val currentActivity = activities[activities.lastIndex]
+        val intent = Intent(currentActivity, clazz)
+        currentActivity.startActivityForResult(intent, code)
     }
 
     /**
@@ -42,9 +52,11 @@ object ActivityManager {
         params.forEach {
             intent.putExtras(it.key to it.value)
         }
-        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(currentActivity, img,
-            img.transitionName).toBundle()
-        currentActivity.startActivity(intent,options)
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            currentActivity, img,
+            img.transitionName
+        ).toBundle()
+        currentActivity.startActivity(intent, options)
     }
 
     /**

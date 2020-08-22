@@ -1,4 +1,4 @@
-package com.yk.silence.customnode.ui
+package com.yk.silence.customnode.ui.dialog
 
 import android.annotation.SuppressLint
 import android.app.Activity

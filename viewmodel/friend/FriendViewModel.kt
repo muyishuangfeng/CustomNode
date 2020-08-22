@@ -2,7 +2,9 @@ package com.yk.silence.customnode.viewmodel.friend
 
 import androidx.lifecycle.MutableLiveData
 import com.yk.silence.customnode.base.vm.BaseViewModel
+import com.yk.silence.customnode.common.MSG_CODE_ADD_FRIEND
 import com.yk.silence.customnode.db.friend.FriendModel
+import com.yk.silence.customnode.util.EventBus
 
 class FriendViewModel : BaseViewModel() {
 
@@ -19,6 +21,7 @@ class FriendViewModel : BaseViewModel() {
 
     //好友状态
     val mFriendState = MutableLiveData<Boolean>()
+
 
     /**
      * 刷新
@@ -73,4 +76,6 @@ class FriendViewModel : BaseViewModel() {
             }
         )
     }
+
+
 }
