@@ -10,4 +10,13 @@ const val USER_AVATAR = "userAvatar.jpg"
 
 const val MSG_TYPE_SEND = 1
 const val MSG_TYPE_RECEIVE = 2
+
+//添加好友
 const val MSG_CODE_ADD_FRIEND = 3
+
+//添加记事本
+const val MSG_CODE_ADD_NODE = 4
+const val CHAT_USER_ID = "10005"
+const val CHAT_USER_TOKEN = "token_10005"
+const val CHAT_USER_AVATAR =
+    "https://nightlesson.oss-cn-hangzhou.aliyuncs.com/0053f885c4fd91f98f.jpg"

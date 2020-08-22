@@ -18,4 +18,9 @@ class HomeRepository {
      * 添加
      */
     suspend fun addNode(homeNode: HomeNode) = RoomHelper.addNode(homeNode)
+
+    /**
+     * 查询最大ID
+     */
+    suspend fun queryMAXID() = RoomHelper.searchMAXID()
 }

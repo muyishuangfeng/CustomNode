@@ -15,7 +15,6 @@ import com.yk.silence.customnode.impl.OnOssResultListener
 import com.yk.silence.customnode.model.EventModel
 import com.yk.silence.customnode.ui.dialog.ChooseDialogHelper
 import com.yk.silence.customnode.util.CameraUtil
-import com.yk.silence.customnode.util.EventBus
 import com.yk.silence.customnode.util.EventUtil
 import com.yk.silence.customnode.util.ToastUtil
 import com.yk.silence.customnode.util.glide.GlideUtils

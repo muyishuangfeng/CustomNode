@@ -20,6 +20,12 @@ class HomeViewModel : BaseViewModel() {
     //空状态
     val mEmptyStatus = MutableLiveData<Boolean>()
 
+    //添加状态
+    val mAddStatus = MutableLiveData<Boolean>()
+
+    //ID
+    val mNumber = MutableLiveData<Int>()
+
     /**
      * 获取数据
      */
@@ -54,5 +60,27 @@ class HomeViewModel : BaseViewModel() {
         )
     }
 
+    /**
+     * 查询最大ID
+     */
+    fun queryMAXID() {
+        launch(
+            block = {
+                mNumber.value = mHomeRepository.queryMAXID()
+            }
+        )
+    }
 
+    /**
+     * 添加记录
+     */
+    fun addNode(homeNode: HomeNode) {
+        mAddStatus.value = false
+        launch(
+            block = {
+                mHomeRepository.addNode(homeNode)
+                mAddStatus.value = true
+            }
+        )
+    }
 }

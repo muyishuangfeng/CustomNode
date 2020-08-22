@@ -1,34 +1,24 @@
 package com.yk.silence.customnode.widget.activity
 
-import android.os.Bundle
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.ac.BaseVMActivity
-import com.yk.silence.customnode.common.ActivityManager
-import com.yk.silence.customnode.common.CONV_TITLE
-import com.yk.silence.customnode.common.HOST
-import com.yk.silence.customnode.common.TARGET_ID
+import com.yk.silence.customnode.common.*
 import com.yk.silence.customnode.databinding.ActivityChatBinding
-import com.yk.silence.customnode.im.CThreadPoolExecutor
-import com.yk.silence.customnode.im.bean.SingleMessage
-import com.yk.silence.customnode.im.event.CEventCenter
-import com.yk.silence.customnode.im.event.Events.CHAT_SINGLE_MESSAGE
-import com.yk.silence.customnode.im.event.I_CEventListener
-import com.yk.silence.customnode.util.ToastUtil
+import com.yk.silence.customnode.db.friend.FriendModel
+import com.yk.silence.customnode.service.MyService
 import com.yk.silence.customnode.viewmodel.chat.ChatViewModel
+import com.yk.silence.customnode.widget.adapter.ChatAdapter
 import com.yk.silence.toolbar.CustomTitleBar
 
 class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
-    CustomTitleBar.TitleClickListener, I_CEventListener {
+    CustomTitleBar.TitleClickListener {
 
-    private var targetID: String = ""
-    //private lateinit var mAdapter: ChatAdapter
+    private lateinit var mFriendMode: FriendModel
+    private lateinit var mAdapter: ChatAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        CEventCenter.registerEventListener(this, CHAT_SINGLE_MESSAGE)
-    }
 
     override fun getLayoutID() = R.layout.activity_chat
 
@@ -37,26 +27,35 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
     override fun initBinding(binding: ActivityChatBinding) {
         super.initBinding(binding)
         binding.titleChatContent.setTitleClickListener(this)
-//        targetID = intent?.getStringExtra(TARGET_ID) ?: return
-//        val title = intent?.getStringExtra(CONV_TITLE) ?: return
-//        binding.userName = title
-       // binding.rlvListChat.layoutManager = LinearLayoutManager(this)
-//        mAdapter = ChatAdapter().apply {
-//
-//        }
-        // binding.rlvListChat.adapter = mAdapter
-        binding.userName="10002"
+        mFriendMode = intent?.getParcelableExtra(PARAM_ARTICLE) ?: return
+        //ActivityManager.startService(MyService::class.java)
+        binding.userName = mFriendMode.user_name
+        mBinding.srlChat.run {
+            setColorSchemeResources(R.color.colorAccent)
+            setProgressBackgroundColorSchemeResource(R.color.colorWhite)
+            setOnRefreshListener { mViewModel.refreshData(mFriendMode.user_id!!) }
+        }
+
+        binding.rlvListChat.layoutManager = LinearLayoutManager(this)
+        mAdapter = ChatAdapter(this).apply {
+
+        }
+        binding.rlvListChat.adapter = mAdapter
         binding.btnChatSend.setOnClickListener {
-            mViewModel.sendTextMsg("10002", "10001", binding.edtChatContent.text.toString())
+            mFriendMode.user_id?.let { it1 ->
+                mViewModel.sendTextMsg(
+                    CHAT_USER_ID,
+                    it1, binding.edtChatContent.text.toString()
+                )
+            }
         }
     }
 
 
     override fun initData() {
         super.initData()
-        mViewModel.enterChat("10002", "token_10002", HOST, 1)
-
-        //mViewModel.getMsgList(targetID)
+        mViewModel.enterChat(CHAT_USER_ID, CHAT_USER_TOKEN, HOST, 1)
+        mViewModel.refreshData(mFriendMode.user_id!!)
     }
 
 
@@ -70,28 +69,32 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
     override fun observer() {
         super.observer()
         mViewModel.run {
+            mChatList.observe(this@ChatActivity, Observer {
+                mAdapter.mList = it
+            })
+
             mTextMsgSendState.observe(this@ChatActivity, Observer {
-                //mAdapter.addSendData(0,)
+                mAdapter.notifyDataSetChanged()
+
+            })
+            mRefreshState.observe(this@ChatActivity, Observer {
+                mBinding.srlChat.isRefreshing = it
             })
 
+            mReLoadState.observe(this@ChatActivity, Observer {
+                mViewModel.refreshData(mFriendMode.user_id!!)
+            })
+            mEmptyState.observe(this@ChatActivity, Observer {
+                mBinding.emptyView.isVisible = it
+            })
 
         }
     }
 
-    override fun onCEvent(topic: String?, msgCode: Int, resultCode: Int, obj: Any?) {
-        if (topic == CHAT_SINGLE_MESSAGE) {
-            val message = obj as SingleMessage
-            CThreadPoolExecutor.runOnMainThread(Runnable {
-                ToastUtil.getInstance()
-                    .shortToast(this, "收到来自：" + message.fromId + "的消息====" + message.content)
-            })
-
-        }
-
-    }
     override fun onDestroy() {
+        //ActivityManager.stopService(MyService::class.java)
         super.onDestroy()
-        CEventCenter.unregisterEventListener(this,CHAT_SINGLE_MESSAGE)
     }
+
 
 }

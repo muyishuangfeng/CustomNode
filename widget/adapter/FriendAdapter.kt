@@ -23,11 +23,11 @@ class FriendAdapter(
     override fun convert(holder: BaseViewHolder, item: FriendModel) {
         holder.itemView.run {
             txt_item_chat_name.text = item.user_name
-            txt_item_chat_time.text = TimeUtil.getChatTime(item.friend_time.toLong())
+            txt_item_chat_time.text = TimeUtil.getChatTime(item.friend_time!!.toLong())
             setOnClickListener {
                 mOnItemClickListener?.invoke(holder.adapterPosition)
             }
-            GlideUtils.loadPathWithCircle(context, item.user_avatar, img_item_chat_avatar)
+            GlideUtils.loadPathWithCircle(context, item.user_avatar!!, img_item_chat_avatar)
             setOnLongClickListener {
                 mOnItemLongClickListener?.invoke(holder.adapterPosition)
                 true

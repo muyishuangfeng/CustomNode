@@ -1,6 +1,7 @@
 package com.yk.silence.customnode.common
 
 import android.app.Activity
+import android.app.Service
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.widget.AppCompatImageView
@@ -25,6 +26,30 @@ object ActivityManager {
             intent.putExtras(it.key to it.value)
         }
         currentActivity.startActivity(intent)
+    }
+
+    /**
+     * 开始服务
+     */
+    fun startService(clazz: Class<out Service>, params: Map<String, Any> = emptyMap()) {
+        val currentActivity = activities[activities.lastIndex]
+        val intent = Intent(currentActivity, clazz)
+        params.forEach {
+            intent.putExtras(it.key to it.value)
+        }
+        currentActivity.startService(intent)
+    }
+
+    /**
+     * 停止服务
+     */
+    fun stopService(clazz: Class<out Service>, params: Map<String, Any> = emptyMap()) {
+        val currentActivity = activities[activities.lastIndex]
+        val intent = Intent(currentActivity, clazz)
+        params.forEach {
+            intent.putExtras(it.key to it.value)
+        }
+        currentActivity.stopService(intent)
     }
 
     /**

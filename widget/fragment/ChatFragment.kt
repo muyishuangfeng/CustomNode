@@ -7,6 +7,7 @@ import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.fg.BaseVMFragment
 import com.yk.silence.customnode.common.ActivityManager
 import com.yk.silence.customnode.common.MSG_CODE_ADD_FRIEND
+import com.yk.silence.customnode.common.PARAM_ARTICLE
 import com.yk.silence.customnode.databinding.FragmentChatBinding
 import com.yk.silence.customnode.db.friend.FriendModel
 import com.yk.silence.customnode.impl.OnCommonDialogListener
@@ -15,6 +16,7 @@ import com.yk.silence.customnode.ui.dialog.DialogFragmentHelper
 import com.yk.silence.customnode.util.EventUtil
 import com.yk.silence.customnode.viewmodel.friend.FriendViewModel
 import com.yk.silence.customnode.widget.activity.AddFriendActivity
+import com.yk.silence.customnode.widget.activity.ChatActivity
 import com.yk.silence.customnode.widget.adapter.FriendAdapter
 import com.yk.silence.toolbar.CustomTitleBar
 import org.greenrobot.eventbus.Subscribe
@@ -55,7 +57,11 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
         }
         mAdapter = FriendAdapter().apply {
             mOnItemClickListener = {
-
+                ActivityManager.start(
+                    ChatActivity::class.java, mapOf(
+                        PARAM_ARTICLE to mList[it]
+                    )
+                )
             }
             mOnItemLongClickListener = {
                 deleteDialog(it)
@@ -97,7 +103,7 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
     }
 
     @Subscribe
-    public fun onEvent(event: Any) {
+    fun onEvent(event: Any) {
         val mData = event as EventModel
         if (mData.code == MSG_CODE_ADD_FRIEND) {
             mViewModel.refreshData()

@@ -71,7 +71,7 @@ object RoomHelper {
      * 添加好友
      */
     suspend fun addFriend(model: FriendModel) {
-        if (!mChatDao.isFriendExit(model.user_id)) {
+        if (!mChatDao.isFriendExit(model.user_id!!)) {
             mChatDao.insertFriend(model).apply {
                 mChatDao.queryFriend()
             }
@@ -83,7 +83,7 @@ object RoomHelper {
      */
     suspend fun deleteFriend(model: FriendModel) {
 
-        if (mChatDao.isFriendExit(model.user_id)) {
+        if (mChatDao.isFriendExit(model.user_id!!)) {
             mChatDao.deleteFriend(model).apply {
                 mChatDao.queryFriend()
             }
@@ -112,6 +112,13 @@ object RoomHelper {
      */
     suspend fun queryChats(id: String, start: Int): MutableList<ChatModel> {
         return mChatDao.queryChat(id, start)
+    }
+
+    /**
+     * 分页查询聊天
+     */
+    suspend fun queryChats(id: String): MutableList<ChatModel> {
+        return mChatDao.queryChat(id)
     }
 
 }

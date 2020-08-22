@@ -7,22 +7,22 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.ac.BaseVMActivity
-import com.yk.silence.customnode.common.ActivityManager
-import com.yk.silence.customnode.common.REQUEST_CODE_OPEN_PHOTO_ALBUM
-import com.yk.silence.customnode.common.REQUEST_CODE_TAKE_PHOTO
+import com.yk.silence.customnode.common.*
 import com.yk.silence.customnode.databinding.ActivityAddNodeBinding
 import com.yk.silence.customnode.db.node.HomeModel
 import com.yk.silence.customnode.db.node.HomeNode
 import com.yk.silence.customnode.db.node.HomePictureModel
 import com.yk.silence.customnode.impl.OnCameraClickListener
+import com.yk.silence.customnode.model.EventModel
 import com.yk.silence.customnode.ui.dialog.ChooseDialogHelper
 import com.yk.silence.customnode.util.CameraUtil
-import com.yk.silence.customnode.viewmodel.node.AddNodeViewModel
+import com.yk.silence.customnode.util.EventUtil
+import com.yk.silence.customnode.viewmodel.home.HomeViewModel
 import com.yk.silence.customnode.widget.adapter.AddNodeAdapter
 import com.yk.silence.toolbar.CustomTitleBar
 import kotlinx.android.synthetic.main.activity_add_node.*
 
-class AddNodeActivity : BaseVMActivity<AddNodeViewModel, ActivityAddNodeBinding>() {
+class AddNodeActivity : BaseVMActivity<HomeViewModel, ActivityAddNodeBinding>() {
 
     private lateinit var mAdapter: AddNodeAdapter
     private var mPhotoList: MutableList<String> = arrayListOf()
@@ -30,7 +30,7 @@ class AddNodeActivity : BaseVMActivity<AddNodeViewModel, ActivityAddNodeBinding>
 
     override fun getLayoutID() = R.layout.activity_add_node
 
-    override fun viewModelClass() = AddNodeViewModel::class.java
+    override fun viewModelClass() = HomeViewModel::class.java
 
 
     override fun initBinding(binding: ActivityAddNodeBinding) {
@@ -117,6 +117,10 @@ class AddNodeActivity : BaseVMActivity<AddNodeViewModel, ActivityAddNodeBinding>
             mNumber.observe(this@AddNodeActivity, Observer {
                 mIDNumber = it
             })
+            mAddStatus.observe(this@AddNodeActivity, Observer {
+                EventUtil.send(EventModel(MSG_CODE_ADD_NODE))
+                ActivityManager.finish(AddNodeActivity::class.java)
+            })
         }
     }
 
@@ -142,7 +146,6 @@ class AddNodeActivity : BaseVMActivity<AddNodeViewModel, ActivityAddNodeBinding>
         homeNode.homeModel = model
         homeNode.pictures = mPictures
         mViewModel.addNode(homeNode)
-        ActivityManager.finish(AddNodeActivity::class.java)
     }
 
 

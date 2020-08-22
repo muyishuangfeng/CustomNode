@@ -42,6 +42,13 @@ interface ChatDao {
     @Query("SELECT * FROM user_chat WHERE chat_id=(:id) ORDER BY id DESC LIMIT :start*10 ")
     suspend fun queryChat(id: String, start: Int): MutableList<ChatModel>
 
+    /**
+     * 根据好友ID查询聊天信息
+     */
+    @Transaction
+    @Query("SELECT * FROM user_chat WHERE chat_id=(:id) ORDER BY id DESC")
+    suspend fun queryChat(id: String): MutableList<ChatModel>
+
 
     /**
      * 好友ID是否存在

@@ -1,5 +1,7 @@
 package com.yk.silence.customnode.viewmodel.chat
 
+import com.yk.silence.customnode.db.friend.ChatModel
+import com.yk.silence.customnode.db.node.RoomHelper
 import com.yk.silence.customnode.im.IMSClientBootstrap
 import com.yk.silence.customnode.im.bean.SingleMessage
 import com.yk.silence.customnode.im.message.MessageProcessor
@@ -17,7 +19,20 @@ class ChatRepository {
         IMSClientBootstrap.getInstance().init(userId, token, hosts, appStatus)
     }
 
+    /**
+     * 查询所有消息
+     */
+    suspend fun searchAllMsg(userId: String, start: Int) = RoomHelper.queryChats(userId, start)
 
+    /**
+     * 查询所有消息
+     */
+    suspend fun searchAllMsg(userId: String) = RoomHelper.queryChats(userId)
+
+    /**
+     * 添加消息
+     */
+    suspend fun addChat(chatModel: ChatModel) = RoomHelper.addChat(chatModel)
 
 
     /**
@@ -33,6 +48,7 @@ class ChatRepository {
         message.timestamp = System.currentTimeMillis()
         message.content = content
         MessageProcessor.getInstance().sendMsg(message)
+
     }
 
 
