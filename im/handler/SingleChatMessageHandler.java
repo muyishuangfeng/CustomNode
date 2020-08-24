@@ -25,7 +25,7 @@ public class SingleChatMessageHandler extends AbstractMessageHandler {
 
     @Override
     protected void action(AppMessage message) {
-        Log.d(TAG, "收到单聊消息，message=" + message);
+        Log.e(TAG, "收到单聊消息，message=" + message);
 
         SingleMessage msg = new SingleMessage();
         msg.setMsgId(message.getHead().getMsgId());

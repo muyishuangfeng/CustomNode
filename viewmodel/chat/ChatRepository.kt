@@ -22,12 +22,12 @@ class ChatRepository {
     /**
      * 查询所有消息
      */
-    suspend fun searchAllMsg(userId: String, start: Int) = RoomHelper.queryChats(userId, start)
+    suspend fun searchAllMsg(chatID: String, userID: String, start: Int) = RoomHelper.queryChats(chatID,userID, start)
 
     /**
      * 查询所有消息
      */
-    suspend fun searchAllMsg(userId: String) = RoomHelper.queryChats(userId)
+    suspend fun searchAllMsg(chatID: String, userID: String) = RoomHelper.queryChats(chatID,userID)
 
     /**
      * 添加消息

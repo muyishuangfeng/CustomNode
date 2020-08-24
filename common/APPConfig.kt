@@ -16,6 +16,9 @@ const val MSG_CODE_ADD_FRIEND = 3
 
 //添加记事本
 const val MSG_CODE_ADD_NODE = 4
+
+//添加消息
+const val MSG_CODE_ADD_MSG = 15
 const val CHAT_USER_ID = "10005"
 const val CHAT_USER_TOKEN = "token_10005"
 const val CHAT_USER_AVATAR =

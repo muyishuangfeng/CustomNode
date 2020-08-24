@@ -1,18 +1,29 @@
 package com.yk.silence.customnode.service
 
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.ViewModelProvider
+import com.yk.silence.customnode.common.CHAT_USER_ID
+import com.yk.silence.customnode.common.CHAT_USER_TOKEN
+import com.yk.silence.customnode.common.HOST
+import com.yk.silence.customnode.common.MSG_CODE_ADD_MSG
 import com.yk.silence.customnode.im.CThreadPoolExecutor
 import com.yk.silence.customnode.im.bean.SingleMessage
 import com.yk.silence.customnode.im.event.CEventCenter
 import com.yk.silence.customnode.im.event.Events
 import com.yk.silence.customnode.im.event.I_CEventListener
+import com.yk.silence.customnode.model.EventModel
+import com.yk.silence.customnode.util.EventUtil
 import com.yk.silence.customnode.util.ToastUtil
+import com.yk.silence.customnode.viewmodel.chat.ChatViewModel
 
-class MyService :LifecycleService(), I_CEventListener {
+class ChatService :LifecycleService(), I_CEventListener {
+
+
 
     override fun onCreate() {
         super.onCreate()
         CEventCenter.registerEventListener(this, Events.CHAT_SINGLE_MESSAGE)
+
     }
 
 
@@ -20,8 +31,7 @@ class MyService :LifecycleService(), I_CEventListener {
         if (topic == Events.CHAT_SINGLE_MESSAGE) {
             val message = obj as SingleMessage
             CThreadPoolExecutor.runOnMainThread(Runnable {
-                ToastUtil.getInstance()
-                    .shortToast(this, "收到来自：" + message.fromId + "的消息====" + message.content)
+                EventUtil.send(EventModel(MSG_CODE_ADD_MSG,message))
             })
 
         }

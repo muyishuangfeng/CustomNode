@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.chad.library.adapter.base.entity.MultiItemEntity
 
 /**
  * 好友表
@@ -55,10 +56,11 @@ class FriendModel(
 @Entity(tableName = "user_chat")
 class ChatModel(
     @PrimaryKey(autoGenerate = true)
-    var id: Int=0,
-    var chat_id: String="",
-    var chat_avatar:String="",
-    var chat_content: String="",
-    var chat_type: Int=0,
-    var chat_content_type: Int=0
+    var id: Int = 0,
+    var chat_id: String = "",
+    var user_id: String = "",
+    var chat_avatar: String = "",
+    var chat_content: String = "",
+     var chat_type: Int = 0,
+    var chat_content_type: Int = 0
 )

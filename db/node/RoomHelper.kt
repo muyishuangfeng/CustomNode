@@ -110,15 +110,31 @@ object RoomHelper {
     /**
      * 分页查询聊天
      */
-    suspend fun queryChats(id: String, start: Int): MutableList<ChatModel> {
-        return mChatDao.queryChat(id, start)
+    suspend fun queryChats(id: String, userID: String, start: Int): MutableList<ChatModel>? {
+        return if (id.isNotEmpty()) {
+            if (mChatDao.isChatExit(id)) {
+                mChatDao.queryChat(id, userID, start)
+            } else {
+                null
+            }
+        } else {
+            null
+        }
     }
 
     /**
      * 分页查询聊天
      */
-    suspend fun queryChats(id: String): MutableList<ChatModel> {
-        return mChatDao.queryChat(id)
+    suspend fun queryChats(id: String, userID: String): MutableList<ChatModel>? {
+        return if (id.isNotEmpty()) {
+            if (mChatDao.isChatExit(id)) {
+                mChatDao.queryChat(id, userID)
+            } else {
+                null
+            }
+        } else {
+            null
+        }
     }
 
 }

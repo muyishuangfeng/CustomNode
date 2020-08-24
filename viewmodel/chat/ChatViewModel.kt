@@ -10,7 +10,7 @@ import java.io.File
 class ChatViewModel : BaseViewModel() {
 
     companion object {
-        const val INITIAL_PAGE = 0
+        const val INITIAL_PAGE = 1
     }
 
     private val mChatRepository by lazy { ChatRepository() }
@@ -22,6 +22,12 @@ class ChatViewModel : BaseViewModel() {
 
     //文本消息发送状态
     val mTextMsgSendState = MutableLiveData<Boolean>()
+
+    //发送
+    val mChatSendModel = MutableLiveData<ChatModel>()
+
+    //接收
+    val mChatReceiveModel = MutableLiveData<ChatModel>()
 
     //图片消息发送状态
     val mImgMsgSendState = MutableLiveData<Boolean>()
@@ -51,17 +57,17 @@ class ChatViewModel : BaseViewModel() {
     /**
      * 刷新消息
      */
-    fun refreshData(userId: String) {
+    fun refreshData(chatID: String, userID: String) {
         mRefreshState.value = true
         mReLoadState.value = false
         mEmptyState.value = false
         launch(
             block = {
-                val currentList = mChatRepository.searchAllMsg(userId, INITIAL_PAGE)
-                val mCurrentList = mChatRepository.searchAllMsg(userId)
-                mTotal = mCurrentList.size
+                val currentList = mChatRepository.searchAllMsg(chatID, userID, INITIAL_PAGE)
+                val mCurrentList = mChatRepository.searchAllMsg(chatID, userID)
+                mTotal = mCurrentList!!.size
                 mChatList.value = currentList
-                mReLoadState.value = currentList.isEmpty()
+                mReLoadState.value = currentList!!.isEmpty()
                 mRefreshState.value = false
             },
             error = {
@@ -75,13 +81,13 @@ class ChatViewModel : BaseViewModel() {
     /**
      * 加载更多
      */
-    fun loadMore(userId: String) {
+    fun loadMore(chatID: String, userID: String) {
         mLoadMoreState.value = LoadMoreStatus.LOADING
         launch(
             block = {
-                val currentList = mChatRepository.searchAllMsg(userId, mPage)
+                val currentList = mChatRepository.searchAllMsg(chatID, userID, mPage)
                 val mCurrentList = mChatList.value ?: mutableListOf()
-                mCurrentList.addAll(currentList)
+                mCurrentList.addAll(currentList!!)
                 mChatList.value = mCurrentList
                 mLoadMoreState.value = if (mPage * 10 >= mTotal) {
                     LoadMoreStatus.END
@@ -101,21 +107,37 @@ class ChatViewModel : BaseViewModel() {
      * 发送文本消息
      */
     fun sendTextMsg(fromID: String, toID: String, content: String) {
-        mTextMsgSendState.value = false
         launch(
             block = {
                 mChatRepository.sendMsg(fromID, toID, content)
                 val model = ChatModel()
                 model.chat_avatar = CHAT_USER_AVATAR
-                model.chat_id = fromID
+                model.user_id = fromID
+                model.chat_id = toID
                 model.chat_content = content
                 model.chat_type = 0
                 model.chat_content_type = 0
                 mChatRepository.addChat(model)
-                mTextMsgSendState.value = true
-            },
-            error = {
-                mTextMsgSendState.value = false
+                mChatSendModel.value = model
+            }
+        )
+    }
+
+    /**
+     * 接收文本消息
+     */
+    fun receiveTextMsg(fromID: String, toID: String, content: String) {
+        launch(
+            block = {
+                val model = ChatModel()
+                model.chat_avatar = CHAT_USER_AVATAR
+                model.user_id = toID
+                model.chat_id = fromID
+                model.chat_content = content
+                model.chat_type = 1
+                model.chat_content_type = 0
+                mChatRepository.addChat(model)
+                mChatReceiveModel.value = model
             }
         )
     }

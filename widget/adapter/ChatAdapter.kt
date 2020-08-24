@@ -59,7 +59,6 @@ class ChatAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.ViewHold
                     mContext, model.chat_avatar,
                     img_item_chat_send_avatar
                 )
-
                 when (mType) {
                     0 -> {//文本
                         txt_item_chat_send_text.text = model.chat_content
@@ -96,6 +95,19 @@ class ChatAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
 
+
+    /**
+     * 添加发送数据
+     *
+     * @param position
+     * @param model
+     */
+    fun addData(position: Int, model: ChatModel) {
+        mList.add(position, model)
+        notifyItemInserted(position) //通知演示插入动画
+        notifyItemRangeChanged(position, mList.size - position) //通知数据与界面重新绑定
+    }
+
     /**
      * 发送
      */
@@ -105,5 +117,4 @@ class ChatAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.ViewHold
      * 接收
      */
     class ChatReceiveViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
 }
