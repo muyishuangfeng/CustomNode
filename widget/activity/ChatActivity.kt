@@ -13,9 +13,7 @@ import com.yk.silence.customnode.im.bean.SingleMessage
 import com.yk.silence.customnode.model.EventModel
 import com.yk.silence.customnode.service.ChatService
 import com.yk.silence.customnode.util.EventUtil
-import com.yk.silence.customnode.util.ToastUtil
 import com.yk.silence.customnode.viewmodel.chat.ChatViewModel
-import com.yk.silence.customnode.widget.adapter.ChatAdapter
 import com.yk.silence.customnode.widget.adapter.chat.ChatTypeAdapter
 import com.yk.silence.toolbar.CustomTitleBar
 import org.greenrobot.eventbus.Subscribe
@@ -24,9 +22,7 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
     CustomTitleBar.TitleClickListener {
 
     private var mFriendMode: FriendModel? = null
-    //private lateinit var mAdapter: ChatAdapter
     private lateinit var mAdapter: ChatTypeAdapter
-    private var mIsFirst = false
 
 
     override fun getLayoutID() = R.layout.activity_chat
@@ -35,7 +31,6 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
 
     override fun initBinding(binding: ActivityChatBinding) {
         super.initBinding(binding)
-        mIsFirst = true
         EventUtil.register(this)
         binding.titleChatContent.setTitleClickListener(this)
         mFriendMode = intent?.getParcelableExtra(PARAM_ARTICLE) ?: return
@@ -45,11 +40,7 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
             setColorSchemeResources(R.color.colorAccent)
             setProgressBackgroundColorSchemeResource(R.color.colorWhite)
             setOnRefreshListener {
-                if (mIsFirst) {
-                    mViewModel.refreshData(mFriendMode!!.user_id!!, CHAT_USER_ID)
-                } else {
-                    mViewModel.loadMore(mFriendMode!!.user_id!!, CHAT_USER_ID)
-                }
+                mViewModel.refreshData(mFriendMode!!.user_id!!, CHAT_USER_ID)
             }
         }
         val linearLayoutManager = LinearLayoutManager(this)
@@ -91,18 +82,16 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
         mViewModel.run {
             mChatList.observe(this@ChatActivity, Observer {
                 mAdapter.addData(it)
-                //mAdapter.mList.addAll(it)
                 refresh()
             })
 
             mChatSendModel.observe(this@ChatActivity, Observer {
-                mAdapter.addData(mAdapter.data.size,it)
-                //mAdapter.addData(mAdapter.mList.size, it)
+                mAdapter.addData(mAdapter.data.size, it)
                 refresh()
             })
 
             mChatReceiveModel.observe(this@ChatActivity, Observer {
-                mAdapter.addData(mAdapter.data.size,it)
+                mAdapter.addData(mAdapter.data.size, it)
                 refresh()
             })
 
@@ -143,18 +132,14 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
     fun onEvent(event: Any) {
         val mData = event as EventModel
         val message = event.result as SingleMessage
-        var mIndex = 0
         if (mData.code == MSG_CODE_ADD_MSG) {
-            mIndex++
             mViewModel.receiveTextMsg(message.fromId, message.toId, message.content)
-            Log.e("TAG", "" + mIndex)
         }
     }
 
     override fun onDestroy() {
         EventUtil.unRegister(this)
         ActivityManager.stopService(ChatService::class.java)
-        mIsFirst = false
         super.onDestroy()
     }
 

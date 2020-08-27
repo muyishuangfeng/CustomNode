@@ -1,32 +1,45 @@
 package com.yk.silence.customnode.net.api
 
+import com.yk.silence.customnode.model.UserModel
 import retrofit2.http.*
 
 interface ApiService {
 
     companion object {
-        const val BASE_URL = "https://www.wanandroid.com"
+        const val BASE_URL = "http://192.168.196.126:8080/"
     }
 
     /**
      * 登录
      */
     @FormUrlEncoded
-    @POST("user/login")
+    @POST("User/login")
     suspend fun login(
-        @Field("username") username: String,
-        @Field("password") password: String
-    ): ApiResult<Any>
+        @Field("user_name") username: String,
+        @Field("user_pass") password: String
+    ): ApiResult<UserModel>
 
     /**
      * 注册
      */
     @FormUrlEncoded
-    @POST("user/register")
+    @POST("User/register")
     suspend fun register(
-        @Field("username") username: String,
-        @Field("password") password: String
-    ): ApiResult<Any>
+        @Field("user_name") username: String,
+        @Field("user_pass") password: String
+    ): ApiResult<UserModel>
+
+    /**
+     * 注册
+     */
+    @Headers("Content-Type:application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("/User/update")
+    suspend fun update(
+        @Field("user_name") username: String,
+        @Field("user_pass") password: String,
+        @Field("user_avatar") user_avatar: String
+    ): ApiResult<UserModel>
 
 
 }
