@@ -36,6 +36,7 @@ interface ApiService {
     @FormUrlEncoded
     @POST("/User/update")
     suspend fun update(
+        @Field("id") id: Int,
         @Field("user_name") username: String,
         @Field("user_pass") password: String,
         @Field("user_avatar") user_avatar: String

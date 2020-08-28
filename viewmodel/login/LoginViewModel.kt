@@ -23,7 +23,7 @@ class LoginViewModel : BaseViewModel() {
         launch(
             block = {
                 //val userInfo = mLoginRepository.login(account, password)
-                val mUserInfo = UserModel(1, "1","","")
+                val mUserInfo = UserModel(1, "1","","","","")
                 mUserRepository.updateUserInfo(mUserInfo)
                 mSubmitting.value = false
             },

@@ -7,8 +7,9 @@ class MineRepository {
      * 更新用户信息
      */
     suspend fun updateUser(
+        id:Int,
         username: String,
         password: String,
         user_avatar: String
-    ) = RetrofitClient.apiService.update(username, password, user_avatar).apiData()
+    ) = RetrofitClient.apiService.update(id,username, password, user_avatar).apiData()
 }

@@ -76,6 +76,7 @@ class MySelfInfoActivity : BaseVMActivity<MineViewModel, ActivityMySelfInfoBindi
                 mBinding.user = it
                 if (it != null) {
                     mUser = it
+                    mAvatar = it.user_avatar
                     GlideUtils.loadPathWithOutCache(
                         this@MySelfInfoActivity,
                         it.user_avatar,
@@ -132,12 +133,11 @@ class MySelfInfoActivity : BaseVMActivity<MineViewModel, ActivityMySelfInfoBindi
         CThreadPoolExecutor.runInBackground(Runnable {
             OSSHelper.updateFile(
                 this@MySelfInfoActivity,
-                "1" + USER_AVATAR,
+                mUser.id.toString() + USER_AVATAR,
                 path,
                 object : OnOssResultListener {
                     override fun onResultSuccess() {
-                        mAvatar = BASE_OSS_URL + "1" + USER_AVATAR
-                        Log.e("TAG", mAvatar.toString())
+                        mAvatar = BASE_OSS_URL + mUser.id.toString() + USER_AVATAR
                     }
 
                     override fun onResultFailed() {
@@ -162,6 +162,7 @@ class MySelfInfoActivity : BaseVMActivity<MineViewModel, ActivityMySelfInfoBindi
             return
         }
         mViewModel.updateUser(
+            mUser.id,
             mBinding.edtNickName.text.toString(),
             mBinding.edtPass.text.toString(),
             mAvatar

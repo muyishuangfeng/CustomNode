@@ -1,5 +1,6 @@
 package com.yk.silence.customnode.widget.fragment
 
+import android.util.Log
 import androidx.lifecycle.Observer
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.fg.BaseFragment
@@ -37,6 +38,7 @@ class MineFragment : BaseVMFragment<MineViewModel, FragmentMineBinding>() {
         mViewModel.run {
             mUserModel.observe(viewLifecycleOwner, Observer {
                 mBinding.user = it
+                Log.e("TAG",it.toString())
                 if (it != null)
                     GlideUtils.loadPathWithOutCache(
                         requireActivity(),

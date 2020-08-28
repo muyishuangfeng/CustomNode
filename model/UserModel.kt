@@ -7,6 +7,8 @@ data class UserModel(
     var id: Int,
     var user_name:String,
     var user_avatar:String,
-    var user_pass: String
+    var user_pass: String,
+    var login_time:String,
+    var user_token:String
 )
 
