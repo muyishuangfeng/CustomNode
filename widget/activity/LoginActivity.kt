@@ -54,17 +54,13 @@ class LoginActivity : BaseVMActivity<LoginViewModel, ActivityLoginBinding>() {
     override fun observer() {
         super.observer()
         mViewModel.run {
-            mSubmitting.observe(this@LoginActivity, Observer {
-                if (it) {
-                    showProgressDialog(R.string.text_logining)
-                    mViewModel.jPushLogin(1)
-                } else hideProgressDialog()
-            })
             mLoginResult.observe(this@LoginActivity, Observer {
                 if (it) {
                     ActivityManager.start(MainActivity::class.java)
+                    ActivityManager.finish(LoginActivity::class.java)
                 } else {
                     ActivityManager.start(RegisterActivity::class.java)
+                    ActivityManager.finish(LoginActivity::class.java)
                 }
             })
         }

@@ -6,10 +6,15 @@ import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.fg.BaseFragment
 import com.yk.silence.customnode.base.fg.BaseVMFragment
 import com.yk.silence.customnode.common.ActivityManager
+import com.yk.silence.customnode.common.MSG_CODE_ADD_FRIEND
+import com.yk.silence.customnode.common.MSG_CODE_UPDATE_INFO
 import com.yk.silence.customnode.databinding.FragmentMineBinding
+import com.yk.silence.customnode.model.EventModel
+import com.yk.silence.customnode.util.EventUtil
 import com.yk.silence.customnode.util.glide.GlideUtils
 import com.yk.silence.customnode.viewmodel.mine.MineViewModel
 import com.yk.silence.customnode.widget.activity.MySelfInfoActivity
+import org.greenrobot.eventbus.Subscribe
 
 class MineFragment : BaseVMFragment<MineViewModel, FragmentMineBinding>() {
 
@@ -23,6 +28,7 @@ class MineFragment : BaseVMFragment<MineViewModel, FragmentMineBinding>() {
 
     override fun initBinding(mBinding: FragmentMineBinding) {
         super.initBinding(mBinding)
+        EventUtil.register(this)
         mBinding.imgMineAvatar.setOnClickListener {
             ActivityManager.start(MySelfInfoActivity::class.java)
         }
@@ -38,7 +44,6 @@ class MineFragment : BaseVMFragment<MineViewModel, FragmentMineBinding>() {
         mViewModel.run {
             mUserModel.observe(viewLifecycleOwner, Observer {
                 mBinding.user = it
-                Log.e("TAG",it.toString())
                 if (it != null)
                     GlideUtils.loadPathWithOutCache(
                         requireActivity(),
@@ -47,5 +52,18 @@ class MineFragment : BaseVMFragment<MineViewModel, FragmentMineBinding>() {
                     )
             })
         }
+    }
+
+    @Subscribe
+    fun onEvent(event: Any) {
+        val mData = event as EventModel
+        if (mData.code == MSG_CODE_UPDATE_INFO) {
+            mViewModel.getData()
+        }
+    }
+
+    override fun onDestroy() {
+        EventUtil.unRegister(this)
+        super.onDestroy()
     }
 }

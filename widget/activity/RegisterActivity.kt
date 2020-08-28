@@ -62,22 +62,7 @@ class RegisterActivity : BaseVMActivity<RegisterViewModel, ActivityRegisterBindi
     override fun observer() {
         super.observer()
         mViewModel.run {
-            mSubmitting.observe(this@RegisterActivity, Observer {
-                if (it) {
-                    mViewModel.jPushRegister(1)
-                    showProgressDialog(R.string.text_registering)
-                } else hideProgressDialog()
-            })
             mRegisterResult.observe(this@RegisterActivity, Observer {
-                if (it) {
-                    ActivityManager.start(MainActivity::class.java)
-                    ActivityManager.finish(RegisterActivity::class.java)
-                } else {
-                    mViewModel.jPushLogin(1)
-                }
-            })
-
-            mLoginResult.observe(this@RegisterActivity, Observer {
                 if (it) {
                     ActivityManager.start(MainActivity::class.java)
                     ActivityManager.finish(RegisterActivity::class.java)

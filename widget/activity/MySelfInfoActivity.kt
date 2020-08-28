@@ -11,9 +11,11 @@ import com.yk.silence.customnode.databinding.ActivityMySelfInfoBinding
 import com.yk.silence.customnode.im.CThreadPoolExecutor
 import com.yk.silence.customnode.impl.OnCameraClickListener
 import com.yk.silence.customnode.impl.OnOssResultListener
+import com.yk.silence.customnode.model.EventModel
 import com.yk.silence.customnode.model.UserModel
 import com.yk.silence.customnode.ui.dialog.ChooseDialogHelper
 import com.yk.silence.customnode.util.CameraUtil
+import com.yk.silence.customnode.util.EventUtil
 import com.yk.silence.customnode.util.ToastUtil
 import com.yk.silence.customnode.util.glide.GlideUtils
 import com.yk.silence.customnode.util.oss.OSSHelper
@@ -86,13 +88,13 @@ class MySelfInfoActivity : BaseVMActivity<MineViewModel, ActivityMySelfInfoBindi
 
             })
             mUpdateState.observe(this@MySelfInfoActivity, Observer {
-                var result = "更新失败"
-                result = if (it) {
-                    "更新成功"
+                if (it) {
+                    ToastUtil.getInstance().shortToast(this@MySelfInfoActivity, "更新成功")
+                    EventUtil.send(EventModel(MSG_CODE_UPDATE_INFO))
+                    ActivityManager.finish(MySelfInfoActivity::class.java)
                 } else {
-                    "更新失败"
+                    ToastUtil.getInstance().shortToast(this@MySelfInfoActivity, "更新失败")
                 }
-                ToastUtil.getInstance().shortToast(this@MySelfInfoActivity, result)
             })
         }
     }
