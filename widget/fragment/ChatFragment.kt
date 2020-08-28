@@ -17,6 +17,7 @@ import com.yk.silence.customnode.util.EventUtil
 import com.yk.silence.customnode.viewmodel.friend.FriendViewModel
 import com.yk.silence.customnode.widget.activity.AddFriendActivity
 import com.yk.silence.customnode.widget.activity.ChatActivity
+import com.yk.silence.customnode.widget.activity.SearchActivity
 import com.yk.silence.customnode.widget.adapter.FriendAdapter
 import com.yk.silence.toolbar.CustomTitleBar
 import org.greenrobot.eventbus.Subscribe
@@ -47,7 +48,7 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
             }
 
             override fun onRightClick() {
-                ActivityManager.start(AddFriendActivity::class.java)
+                ActivityManager.start(SearchActivity::class.java)
             }
         })
         mBinding.srlChat.run {

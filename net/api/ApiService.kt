@@ -1,5 +1,7 @@
 package com.yk.silence.customnode.net.api
 
+import com.yk.silence.customnode.db.friend.FriendModel
+import com.yk.silence.customnode.model.FriendBean
 import com.yk.silence.customnode.model.UserModel
 import retrofit2.http.*
 
@@ -30,9 +32,8 @@ interface ApiService {
     ): ApiResult<UserModel>
 
     /**
-     * 注册
+     * 更新用户信息
      */
-    @Headers("Content-Type:application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("/User/update")
     suspend fun update(
@@ -41,6 +42,33 @@ interface ApiService {
         @Field("user_pass") password: String,
         @Field("user_avatar") user_avatar: String
     ): ApiResult<UserModel>
+
+    /**
+     * 查询好友
+     */
+    @FormUrlEncoded
+    @POST("/User/searchUser")
+    suspend fun searchFriend(
+        @Field("id") id: Int
+    ): ApiResult<UserModel>
+
+    /**
+     * 添加好友
+     */
+    @FormUrlEncoded
+    @POST("/friend/addFriend")
+    suspend fun addFriend(
+        @Field("id") id: Int
+    ): ApiResult<FriendBean>
+
+    /**
+     * 删除好友
+     */
+    @FormUrlEncoded
+    @POST("/friend/deleteFriend")
+    suspend fun deleteFriend(
+        @Field("id") id: Int
+    ): ApiResult<String>
 
 
 }

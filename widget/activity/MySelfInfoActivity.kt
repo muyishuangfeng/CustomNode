@@ -78,12 +78,15 @@ class MySelfInfoActivity : BaseVMActivity<MineViewModel, ActivityMySelfInfoBindi
                 mBinding.user = it
                 if (it != null) {
                     mUser = it
-                    mAvatar = it.user_avatar
-                    GlideUtils.loadPathWithOutCache(
-                        this@MySelfInfoActivity,
-                        it.user_avatar,
-                        mBinding.imgMyselfAvatar
-                    )
+                    if (it.user_avatar != null) {
+                        mAvatar = it.user_avatar!!
+                        GlideUtils.loadPathWithOutCache(
+                            this@MySelfInfoActivity,
+                            it.user_avatar,
+                            mBinding.imgMyselfAvatar
+                        )
+                    }
+
                 }
 
             })

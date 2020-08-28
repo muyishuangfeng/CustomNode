@@ -2,9 +2,8 @@ package com.yk.silence.customnode.viewmodel.friend
 
 import androidx.lifecycle.MutableLiveData
 import com.yk.silence.customnode.base.vm.BaseViewModel
-import com.yk.silence.customnode.common.MSG_CODE_ADD_FRIEND
 import com.yk.silence.customnode.db.friend.FriendModel
-import com.yk.silence.customnode.util.EventBus
+import com.yk.silence.customnode.model.FriendBean
 
 class FriendViewModel : BaseViewModel() {
 
@@ -21,6 +20,12 @@ class FriendViewModel : BaseViewModel() {
 
     //好友状态
     val mFriendState = MutableLiveData<Boolean>()
+
+    //好友数据
+    val mFriendModel = MutableLiveData<FriendBean>()
+
+    //删除状态
+    val mDeleteState = MutableLiveData<Boolean>()
 
 
     /**
@@ -77,5 +82,31 @@ class FriendViewModel : BaseViewModel() {
         )
     }
 
+    /**
+     * 添加好友
+     */
+    fun addFriend(id: Int) {
+        launch(
+            block = {
+                mFriendModel.value = mFriendRepository.addNetFriend(id)
+            }
+        )
+    }
 
+    /**
+     * 删除好友
+     */
+    fun deleteFriend(id: Int) {
+        mDeleteState.value = false
+        launch(
+            block = {
+                mFriendRepository.deleteNetFriend(id).apply {
+                    mDeleteState.value = true
+                }
+            },
+            error = {
+                mDeleteState.value = false
+            }
+        )
+    }
 }

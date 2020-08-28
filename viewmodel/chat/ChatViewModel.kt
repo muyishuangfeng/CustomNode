@@ -106,13 +106,14 @@ class ChatViewModel : BaseViewModel() {
     /**
      * 发送文本消息
      */
-    fun sendTextMsg(fromID: String, toID: String, content: String) {
+    fun sendTextMsg(toID: String, content: String) {
         launch(
             block = {
-                mChatRepository.sendMsg(fromID, toID, content)
+                val mUserModel=mUserRepository.getUserInfo()
+                mChatRepository.sendMsg(mUserModel!!.id.toString(), toID, content)
                 val model = ChatModel()
                 model.chat_avatar = CHAT_USER_AVATAR
-                model.user_id = fromID
+                model.user_id = mUserModel.id.toString()
                 model.chat_id = toID
                 model.chat_content = content
                 model.chat_type = 0
@@ -126,13 +127,14 @@ class ChatViewModel : BaseViewModel() {
     /**
      * 接收文本消息
      */
-    fun receiveTextMsg(fromID: String, toID: String, content: String) {
+    fun receiveTextMsg(toID: String, content: String) {
         launch(
             block = {
+                val mUserModel=mUserRepository.getUserInfo()
                 val model = ChatModel()
                 model.chat_avatar = CHAT_USER_AVATAR
                 model.user_id = toID
-                model.chat_id = fromID
+                model.chat_id = mUserModel!!.id.toString()
                 model.chat_content = content
                 model.chat_type = 1
                 model.chat_content_type = 0
@@ -146,10 +148,11 @@ class ChatViewModel : BaseViewModel() {
     /**
      * 进入聊天
      */
-    fun enterChat(userId: String, token: String, hosts: String, appStatus: Int) {
+    fun enterChat( hosts: String, appStatus: Int) {
         launch(
             block = {
-                mChatRepository.enterChat(userId, token, hosts, appStatus)
+                val mUserModel=mUserRepository.getUserInfo()
+                mChatRepository.enterChat(mUserModel!!.id.toString(), mUserModel.user_token!!, hosts, appStatus)
             }
         )
     }

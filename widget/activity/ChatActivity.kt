@@ -1,6 +1,5 @@
 package com.yk.silence.customnode.widget.activity
 
-import android.util.Log
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,7 +51,6 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
         binding.btnChatSend.setOnClickListener {
             mFriendMode!!.user_id?.let { it1 ->
                 mViewModel.sendTextMsg(
-                    CHAT_USER_ID,
                     it1, binding.edtChatContent.text.toString()
                 )
             }
@@ -65,7 +63,7 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
     override fun initData() {
         super.initData()
         mViewModel.refreshData(mFriendMode?.user_id!!, CHAT_USER_ID)
-        mViewModel.enterChat(CHAT_USER_ID, CHAT_USER_TOKEN, HOST, 1)
+        mViewModel.enterChat(HOST, 1)
     }
 
 
@@ -133,7 +131,7 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
         val mData = event as EventModel
         val message = event.result as SingleMessage
         if (mData.code == MSG_CODE_ADD_MSG) {
-            mViewModel.receiveTextMsg(message.fromId, message.toId, message.content)
+            mViewModel.receiveTextMsg(message.toId, message.content)
         }
     }
 

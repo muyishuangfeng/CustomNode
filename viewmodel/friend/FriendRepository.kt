@@ -2,6 +2,7 @@ package com.yk.silence.customnode.viewmodel.friend
 
 import com.yk.silence.customnode.db.friend.FriendModel
 import com.yk.silence.customnode.db.node.RoomHelper
+import com.yk.silence.customnode.net.retrofit.RetrofitClient
 
 class FriendRepository {
 
@@ -19,7 +20,15 @@ class FriendRepository {
      * 添加好友
      */
     suspend fun addFriend(model: FriendModel) = RoomHelper.addFriend(model)
-    
-    
-   
+
+    /**
+     * 添加好友
+     */
+    suspend fun addNetFriend(id: Int) = RetrofitClient.apiService.addFriend(id).apiData()
+
+    /**
+     * 删除好友
+     */
+    suspend fun deleteNetFriend(id: Int) = RetrofitClient.apiService.deleteFriend(id).apiData()
+
 }
