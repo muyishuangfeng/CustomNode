@@ -26,6 +26,7 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
 
     private lateinit var mAdapter: FriendAdapter
     private lateinit var mList: MutableList<FriendModel>
+    private lateinit var mFriend: FriendModel
 
     companion object {
         fun newInstance() = ChatFragment()
@@ -98,6 +99,10 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
             mFriendState.observe(viewLifecycleOwner, Observer {
                 mViewModel.refreshData()
             })
+            mDeleteState.observe(viewLifecycleOwner, Observer {
+                if (it)
+                    mViewModel.deleteFriend(mFriend)
+            })
 
 
         }
@@ -128,7 +133,8 @@ class ChatFragment : BaseVMFragment<FriendViewModel, FragmentChatBinding>() {
             2,
             object : OnCommonDialogListener {
                 override fun onResult() {
-                    mViewModel.deleteFriend(mList[position])
+                    mFriend = mList[position]
+                    mViewModel.deleteFriend(mList[position].id)
                 }
 
                 override fun onCancel() {

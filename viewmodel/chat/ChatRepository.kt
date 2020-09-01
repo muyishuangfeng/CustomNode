@@ -22,12 +22,13 @@ class ChatRepository {
     /**
      * 查询所有消息
      */
-    suspend fun searchAllMsg(chatID: String, userID: String, start: Int) = RoomHelper.queryChats(chatID,userID, start)
+    suspend fun searchAllMsg(chatID: String, userID: String, start: Int) =
+        RoomHelper.queryChats(chatID, userID, start)
 
     /**
      * 查询所有消息
      */
-    suspend fun searchAllMsg(chatID: String, userID: String) = RoomHelper.queryChats(chatID,userID)
+    suspend fun searchAllMsg(chatID: String, userID: String) = RoomHelper.queryChats(chatID, userID)
 
     /**
      * 添加消息
@@ -38,17 +39,26 @@ class ChatRepository {
     /**
      * 发送消息
      */
-    suspend fun sendMsg(fromID: String, toID: String, content: String) {
+    suspend fun sendMsg(fromID: String, toID: String, content: String, code: Int) {
         val message = SingleMessage()
         message.msgId = UUID.randomUUID().toString()
         message.msgType = MessageType.SINGLE_CHAT.msgType
-        message.msgContentType = MessageType.MessageContentType.TEXT.msgContentType
+        when (code) {
+            0 -> {
+                message.msgContentType = MessageType.MessageContentType.TEXT.msgContentType
+            }
+            1 -> {
+                message.msgContentType = MessageType.MessageContentType.IMAGE.msgContentType
+            }
+            else -> {
+                message.msgContentType = MessageType.MessageContentType.VOICE.msgContentType
+            }
+        }
         message.fromId = fromID
         message.toId = toID
         message.timestamp = System.currentTimeMillis()
         message.content = content
         MessageProcessor.getInstance().sendMsg(message)
-
     }
 
 

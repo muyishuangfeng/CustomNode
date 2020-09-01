@@ -1,7 +1,6 @@
 package com.yk.silence.customnode.widget.activity
 
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.Observer
 import com.yk.silence.customnode.R
@@ -10,6 +9,7 @@ import com.yk.silence.customnode.common.*
 import com.yk.silence.customnode.databinding.ActivityMySelfInfoBinding
 import com.yk.silence.customnode.im.CThreadPoolExecutor
 import com.yk.silence.customnode.impl.OnCameraClickListener
+import com.yk.silence.customnode.impl.OnCameraResultListener
 import com.yk.silence.customnode.impl.OnOssResultListener
 import com.yk.silence.customnode.model.EventModel
 import com.yk.silence.customnode.model.UserModel
@@ -50,14 +50,12 @@ class MySelfInfoActivity : BaseVMActivity<MineViewModel, ActivityMySelfInfoBindi
                         if (position == 1) {
                             //跳转到相册
                             CameraUtil.openAlbum(
-                                this@MySelfInfoActivity,
-                                REQUEST_CODE_OPEN_PHOTO_ALBUM
+                                this@MySelfInfoActivity
                             )
                         } else {
                             //跳转到相机
-                            CameraUtil.openAlbum(
-                                this@MySelfInfoActivity,
-                                REQUEST_CODE_TAKE_PHOTO
+                            CameraUtil.openCamera(
+                                this@MySelfInfoActivity
                             )
                         }
                     }
@@ -104,22 +102,9 @@ class MySelfInfoActivity : BaseVMActivity<MineViewModel, ActivityMySelfInfoBindi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        CameraUtil.onActivityResult(
-            this,
-            requestCode,
-            resultCode,
-            data,
-            object : CameraUtil.OnCameraResultListener {
-                override fun onCameraResult(uri: Uri) {
-                    GlideUtils.loadPathWithOutCache(
-                        this@MySelfInfoActivity,
-                        uri.toString(),
-                        mBinding.imgMyselfAvatar
-                    )
-                    uploadFile(uri.toString())
-                }
-
-                override fun onAlbumResult(path: String) {
+        CameraUtil.onActivityResult(requestCode, resultCode, data, object : OnCameraResultListener {
+            override fun onCameraResult(path: String?) {
+                if (path != null) {
                     GlideUtils.loadPathWithOutCache(
                         this@MySelfInfoActivity,
                         path,
@@ -127,7 +112,22 @@ class MySelfInfoActivity : BaseVMActivity<MineViewModel, ActivityMySelfInfoBindi
                     )
                     uploadFile(path)
                 }
-            })
+
+            }
+
+            override fun onAlbumResult(path: String?) {
+                if (path != null) {
+                    GlideUtils.loadPathWithOutCache(
+                        this@MySelfInfoActivity,
+                        path,
+                        mBinding.imgMyselfAvatar
+                    )
+                    uploadFile(path)
+                }
+            }
+
+        })
+
     }
 
 

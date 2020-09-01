@@ -22,7 +22,6 @@ const val MSG_CODE_ADD_MSG = 5
 
 //更新用户信息
 const val MSG_CODE_UPDATE_INFO = 6
-const val CHAT_USER_ID = "10005"
-const val CHAT_USER_TOKEN = "token_10005"
+const val CHAT_USER_TOKEN = "token_"
 const val CHAT_USER_AVATAR =
     "https://nightlesson.oss-cn-hangzhou.aliyuncs.com/0053f885c4fd91f98f.jpg"

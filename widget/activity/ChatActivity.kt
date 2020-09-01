@@ -1,5 +1,8 @@
 package com.yk.silence.customnode.widget.activity
 
+import android.content.Intent
+import android.util.Log
+import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,10 +11,16 @@ import com.yk.silence.customnode.base.ac.BaseVMActivity
 import com.yk.silence.customnode.common.*
 import com.yk.silence.customnode.databinding.ActivityChatBinding
 import com.yk.silence.customnode.db.friend.FriendModel
+import com.yk.silence.customnode.im.CThreadPoolExecutor
 import com.yk.silence.customnode.im.bean.SingleMessage
+import com.yk.silence.customnode.impl.OnCameraResultListener
+import com.yk.silence.customnode.impl.OnOssResultListener
 import com.yk.silence.customnode.model.EventModel
 import com.yk.silence.customnode.service.ChatService
+import com.yk.silence.customnode.util.CameraUtil
 import com.yk.silence.customnode.util.EventUtil
+import com.yk.silence.customnode.util.ToastUtil
+import com.yk.silence.customnode.util.oss.OSSHelper
 import com.yk.silence.customnode.viewmodel.chat.ChatViewModel
 import com.yk.silence.customnode.widget.adapter.chat.ChatTypeAdapter
 import com.yk.silence.toolbar.CustomTitleBar
@@ -39,7 +48,7 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
             setColorSchemeResources(R.color.colorAccent)
             setProgressBackgroundColorSchemeResource(R.color.colorWhite)
             setOnRefreshListener {
-                mViewModel.refreshData(mFriendMode!!.user_id!!, CHAT_USER_ID)
+                mViewModel.refreshData(mFriendMode!!.user_id!!)
             }
         }
         val linearLayoutManager = LinearLayoutManager(this)
@@ -51,10 +60,23 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
         binding.btnChatSend.setOnClickListener {
             mFriendMode!!.user_id?.let { it1 ->
                 mViewModel.sendTextMsg(
-                    it1, binding.edtChatContent.text.toString()
+                    it1, binding.edtChatContent.text.toString().trim()
                 )
             }
             binding.edtChatContent.setText("")
+        }
+        binding.imgChatMore.setOnClickListener {
+            if (binding.lytBottomItem.visibility == View.GONE) {
+                binding.lytBottomItem.visibility = View.VISIBLE
+            } else {
+                binding.lytBottomItem.visibility = View.GONE
+            }
+        }
+        binding.imgChatCamera.setOnClickListener {
+            CameraUtil.openCamera(this)
+        }
+        binding.imgChatPhoto.setOnClickListener {
+            CameraUtil.openAlbum(this)
         }
 
     }
@@ -62,7 +84,7 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
 
     override fun initData() {
         super.initData()
-        mViewModel.refreshData(mFriendMode?.user_id!!, CHAT_USER_ID)
+        mViewModel.refreshData(mFriendMode?.user_id!!)
         mViewModel.enterChat(HOST, 1)
     }
 
@@ -79,8 +101,8 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
         super.observer()
         mViewModel.run {
             mChatList.observe(this@ChatActivity, Observer {
-                mAdapter.addData(it)
-                refresh()
+                mAdapter.setList(it)
+                //refresh()
             })
 
             mChatSendModel.observe(this@ChatActivity, Observer {
@@ -135,6 +157,27 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
         }
     }
 
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        CameraUtil.onActivityResult(requestCode, resultCode, data, object : OnCameraResultListener {
+            override fun onCameraResult(path: String?) {
+                if (path != null) {
+                    uploadFile(path)
+                }
+
+            }
+
+            override fun onAlbumResult(path: String?) {
+                if (path != null) {
+                    uploadFile(path)
+                }
+            }
+
+        })
+    }
+
+
     override fun onDestroy() {
         EventUtil.unRegister(this)
         ActivityManager.stopService(ChatService::class.java)
@@ -155,4 +198,33 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
         mAdapter.notifyDataSetChanged()
     }
 
+    /**
+     * 上传文件
+     */
+    private fun uploadFile(path: String) {
+        val mName = System.currentTimeMillis().toString() + ".jpg"
+        CThreadPoolExecutor.runInBackground(Runnable {
+            OSSHelper.updateFile(
+                this@ChatActivity,
+                mName,
+                path,
+                object : OnOssResultListener {
+                    override fun onResultSuccess() {
+                        val mPhotoUrl =
+                            BASE_OSS_URL + mName
+                        Log.e("TAG", "========" + mPhotoUrl)
+                        mFriendMode!!.user_id?.let { it ->
+                            mViewModel.sendImgMsg(it, mPhotoUrl)
+                        }
+                        ToastUtil.getInstance().shortToast(this@ChatActivity, "发送成功")
+
+                    }
+
+                    override fun onResultFailed() {
+                        Log.e("TAG", "onResultFailed")
+                    }
+
+                })
+        })
+    }
 }

@@ -1,7 +1,6 @@
 package com.yk.silence.customnode.widget.activity
 
 import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +12,7 @@ import com.yk.silence.customnode.db.node.HomeModel
 import com.yk.silence.customnode.db.node.HomeNode
 import com.yk.silence.customnode.db.node.HomePictureModel
 import com.yk.silence.customnode.impl.OnCameraClickListener
+import com.yk.silence.customnode.impl.OnCameraResultListener
 import com.yk.silence.customnode.model.EventModel
 import com.yk.silence.customnode.ui.dialog.ChooseDialogHelper
 import com.yk.silence.customnode.util.CameraUtil
@@ -66,14 +66,12 @@ class AddNodeActivity : BaseVMActivity<HomeViewModel, ActivityAddNodeBinding>() 
                                     if (position == 1) {
                                         //跳转到相册
                                         CameraUtil.openAlbum(
-                                            this@AddNodeActivity,
-                                            REQUEST_CODE_OPEN_PHOTO_ALBUM
+                                            this@AddNodeActivity
                                         )
                                     } else {
                                         //跳转到相机
-                                        CameraUtil.openAlbum(
-                                            this@AddNodeActivity,
-                                            REQUEST_CODE_TAKE_PHOTO
+                                        CameraUtil.openCamera(
+                                            this@AddNodeActivity
                                         )
                                     }
                                 }
@@ -93,22 +91,24 @@ class AddNodeActivity : BaseVMActivity<HomeViewModel, ActivityAddNodeBinding>() 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        CameraUtil.onActivityResult(
-            this,
-            requestCode,
-            resultCode,
-            data,
-            object : CameraUtil.OnCameraResultListener {
-                override fun onCameraResult(uri: Uri) {
-                    mPhotoList.add(uri.toString())
-                    mAdapter.setNewData(mPhotoList)
-                }
-
-                override fun onAlbumResult(path: String) {
+        CameraUtil.onActivityResult(requestCode, resultCode, data, object : OnCameraResultListener {
+            override fun onCameraResult(path: String?) {
+                if (path != null) {
                     mPhotoList.add(path)
                     mAdapter.setNewData(mPhotoList)
                 }
-            })
+
+            }
+
+            override fun onAlbumResult(path: String?) {
+                if (path != null) {
+                    mPhotoList.add(path)
+                    mAdapter.setNewData(mPhotoList)
+                }
+            }
+
+        })
+
     }
 
     override fun observer() {
