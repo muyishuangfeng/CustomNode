@@ -1,7 +1,9 @@
 package com.yk.silence.customnode.widget.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -15,11 +17,15 @@ import com.yk.silence.customnode.im.CThreadPoolExecutor
 import com.yk.silence.customnode.im.bean.SingleMessage
 import com.yk.silence.customnode.impl.OnCameraResultListener
 import com.yk.silence.customnode.impl.OnOssResultListener
+import com.yk.silence.customnode.impl.OnUploadListener
 import com.yk.silence.customnode.model.EventModel
 import com.yk.silence.customnode.service.ChatService
+import com.yk.silence.customnode.ui.dialog.DialogFragmentHelper
+import com.yk.silence.customnode.ui.dialog.VoiceDialog
 import com.yk.silence.customnode.util.CameraUtil
 import com.yk.silence.customnode.util.EventUtil
 import com.yk.silence.customnode.util.ToastUtil
+import com.yk.silence.customnode.util.media.RecordManager
 import com.yk.silence.customnode.util.oss.OSSHelper
 import com.yk.silence.customnode.viewmodel.chat.ChatViewModel
 import com.yk.silence.customnode.widget.adapter.chat.ChatTypeAdapter
@@ -31,12 +37,16 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
 
     private var mFriendMode: FriendModel? = null
     private lateinit var mAdapter: ChatTypeAdapter
+    private lateinit var mDialog: VoiceDialog
+    private var mStartTime = 0L
+    private var mEndTime = 0L
 
 
     override fun getLayoutID() = R.layout.activity_chat
 
     override fun viewModelClass() = ChatViewModel::class.java
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun initBinding(binding: ActivityChatBinding) {
         super.initBinding(binding)
         EventUtil.register(this)
@@ -77,6 +87,42 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
         }
         binding.imgChatPhoto.setOnClickListener {
             CameraUtil.openAlbum(this)
+        }
+        binding.imgChatVoice.setOnClickListener {
+            if (binding.edtChatContent.visibility == View.VISIBLE) {
+                binding.edtChatContent.visibility = View.GONE
+                binding.btnChatVoice.visibility = View.VISIBLE
+            } else {
+                binding.edtChatContent.visibility = View.VISIBLE
+                binding.btnChatVoice.visibility = View.GONE
+            }
+        }
+        binding.btnChatVoice.setOnTouchListener { view, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    mDialog = VoiceDialog(this)
+                    mDialog.show()
+                    RecordManager.getInstance().startRecord(this)
+                    mStartTime = System.currentTimeMillis()
+                }
+                MotionEvent.ACTION_UP -> {
+                    mDialog.dismiss()
+                    mEndTime = System.currentTimeMillis()
+                    val mDurationTime = mEndTime - mStartTime
+                    RecordManager.getInstance().stopRecord(this, object : OnUploadListener {
+                        override fun onResultSuccess(url: String) {
+                            mFriendMode!!.user_id?.let { it ->
+                                mViewModel.sendVoiceMsg(it, url)
+                            }
+                            Log.e("TAG", "==========$url=======" + mDurationTime / 1000)
+                        }
+
+                    })
+                }
+                else -> {
+                }
+            }
+            true
         }
 
     }
@@ -212,12 +258,10 @@ class ChatActivity : BaseVMActivity<ChatViewModel, ActivityChatBinding>(),
                     override fun onResultSuccess() {
                         val mPhotoUrl =
                             BASE_OSS_URL + mName
-                        Log.e("TAG", "========" + mPhotoUrl)
                         mFriendMode!!.user_id?.let { it ->
                             mViewModel.sendImgMsg(it, mPhotoUrl)
                         }
                         ToastUtil.getInstance().shortToast(this@ChatActivity, "发送成功")
-
                     }
 
                     override fun onResultFailed() {

@@ -61,6 +61,6 @@ class ChatModel(
     var user_id: String = "",
     var chat_avatar: String = "",
     var chat_content: String = "",
-     var chat_type: Int = 0,
+    var chat_type: Int = 0,
     var chat_content_type: Int = 0
 )

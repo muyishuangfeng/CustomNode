@@ -174,5 +174,20 @@ object DialogFragmentHelper {
         )
     }
 
+    /**
+     * 显示录音对话框
+     */
+    fun voiceDialog(fragmentManager: FragmentManager?) {
+        val dialogFragment: BaseDialogFragment? =
+            BaseDialogFragment.newInstance(object : OnCallDialog {
+                override fun getDialog(context: Context?): Dialog {
+                    return VoiceDialog(context!!)
+                }
+            }, true, null)
+        dialogFragment?.show(
+            fragmentManager!!,
+            mProgressTag
+        )
+    }
 
 }

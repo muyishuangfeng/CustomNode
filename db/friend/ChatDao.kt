@@ -39,14 +39,14 @@ interface ChatDao {
      * 根据好友ID查询聊天信息
      */
     @Transaction
-    @Query("SELECT * FROM user_chat WHERE chat_id=(:chatID) AND user_id=(:userID) ORDER BY id DESC LIMIT :start*10")
+    @Query("SELECT * FROM user_chat WHERE chat_id=(:chatID) AND user_id=(:userID) ORDER BY id  LIMIT :start*10")
     suspend fun queryChat(chatID: String, userID: String, start: Int): MutableList<ChatModel>
 
     /**
      * 根据好友ID查询聊天信息
      */
     @Transaction
-    @Query("SELECT * FROM user_chat WHERE chat_id=(:id) AND user_id=(:userID) ORDER BY id DESC")
+    @Query("SELECT * FROM user_chat WHERE chat_id=(:id) AND user_id=(:userID) ORDER BY id ")
     suspend fun queryChat(id: String, userID: String): MutableList<ChatModel>
 
 
