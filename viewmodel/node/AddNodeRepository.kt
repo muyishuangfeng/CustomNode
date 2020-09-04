@@ -1,6 +1,6 @@
 package com.yk.silence.customnode.viewmodel.node
 
-import com.yk.silence.customnode.db.node.RoomHelper
+import com.yk.silence.customnode.db.helper.RoomHelper
 
 class AddNodeRepository {
     /**

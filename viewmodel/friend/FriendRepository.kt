@@ -1,7 +1,7 @@
 package com.yk.silence.customnode.viewmodel.friend
 
 import com.yk.silence.customnode.db.friend.FriendModel
-import com.yk.silence.customnode.db.node.RoomHelper
+import com.yk.silence.customnode.db.helper.RoomHelper
 import com.yk.silence.customnode.net.retrofit.RetrofitClient
 
 class FriendRepository {

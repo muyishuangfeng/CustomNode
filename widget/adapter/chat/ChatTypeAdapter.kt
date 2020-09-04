@@ -30,7 +30,6 @@ class ChatTypeAdapter : BaseDelegateMultiAdapter<ChatModel, BaseViewHolder>() {
 
     override fun convert(holder: BaseViewHolder, item: ChatModel) {
         mPosition = getItemPosition(item)
-        Log.e("TAG", "=========" + mPosition)
         when (holder.itemViewType) {
             MSG_TYPE_SEND -> {
                 holder.itemView.run {

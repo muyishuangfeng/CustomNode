@@ -9,7 +9,7 @@ import com.yk.silence.customnode.common.ActivityManager
 import com.yk.silence.customnode.common.PARAM_ARTICLE
 import com.yk.silence.customnode.model.CircleItemImage
 import com.yk.silence.customnode.util.glide.load
-import com.yk.silence.customnode.widget.activity.DetailActivity
+import com.yk.silence.customnode.widget.activity.PictureDetailActivity
 import kotlinx.android.synthetic.main.item_circle_image_layout.view.*
 
 class CircleItemAdapter(layoutID: Int = R.layout.item_circle_image_layout) :
@@ -23,7 +23,7 @@ class CircleItemAdapter(layoutID: Int = R.layout.item_circle_image_layout) :
             }
             setOnClickListener {
                 ActivityManager.start(
-                    DetailActivity::class.java, mapOf(
+                    PictureDetailActivity::class.java, mapOf(
                         PARAM_ARTICLE to item.imgUrl
                     ), img_item_circle_photo
                 )

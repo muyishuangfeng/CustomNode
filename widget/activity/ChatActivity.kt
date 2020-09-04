@@ -20,7 +20,6 @@ import com.yk.silence.customnode.impl.OnOssResultListener
 import com.yk.silence.customnode.impl.OnUploadListener
 import com.yk.silence.customnode.model.EventModel
 import com.yk.silence.customnode.service.ChatService
-import com.yk.silence.customnode.ui.dialog.DialogFragmentHelper
 import com.yk.silence.customnode.ui.dialog.VoiceDialog
 import com.yk.silence.customnode.util.CameraUtil
 import com.yk.silence.customnode.util.EventUtil

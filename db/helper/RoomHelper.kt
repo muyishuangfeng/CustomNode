@@ -1,9 +1,12 @@
-package com.yk.silence.customnode.db.node
+package com.yk.silence.customnode.db.helper
 
 import com.yk.silence.customnode.common.APP
 import com.yk.silence.customnode.db.friend.ChatModel
 import com.yk.silence.customnode.db.friend.FriendModel
-import com.yk.silence.customnode.widget.fragment.ChatFragment
+import com.yk.silence.customnode.db.mine.MyselfModel
+import com.yk.silence.customnode.db.node.HomeNode
+import com.yk.silence.customnode.db.node.HomePictureModel
+import com.yk.silence.customnode.db.node.NodeDataBase
 
 /**
  * 数据库帮助类
@@ -14,12 +17,23 @@ object RoomHelper {
     /**
      * 获取记事本
      */
-    private val mHomeNodeDao = NodeDataBase.getInstance(APP.sInstance).homeNodeDao()
+    private val mHomeNodeDao = NodeDataBase.getInstance(
+        APP.sInstance
+    ).homeNodeDao()
 
     /**
      * 获取好友
      */
-    private val mChatDao = NodeDataBase.getInstance(APP.sInstance).chatDao()
+    private val mChatDao = NodeDataBase.getInstance(
+        APP.sInstance
+    ).chatDao()
+
+    /**
+     * 我的信息
+     */
+    private val mMineDao = NodeDataBase.getInstance(
+        APP.sInstance
+    ).myselfDao()
 
     /**
      * 倒叙查询所有记录
@@ -137,4 +151,15 @@ object RoomHelper {
         }
     }
 
+    /**
+     * 插入我的信息
+     */
+    suspend fun insertMineInfo(mList: List<MyselfModel>): MutableList<MyselfModel?> {
+        mList.forEach {
+            mMineDao.insertInfo(it)
+        }.apply {
+            return mMineDao.queryAllInfo()
+        }
+
+    }
 }

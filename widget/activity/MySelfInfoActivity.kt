@@ -78,11 +78,7 @@ class MySelfInfoActivity : BaseVMActivity<MineViewModel, ActivityMySelfInfoBindi
                     mUser = it
                     if (it.user_avatar != null) {
                         mAvatar = it.user_avatar!!
-                        GlideUtils.loadPathWithOutCache(
-                            this@MySelfInfoActivity,
-                            it.user_avatar,
-                            mBinding.imgMyselfAvatar
-                        )
+
                     }
 
                 }
@@ -167,7 +163,6 @@ class MySelfInfoActivity : BaseVMActivity<MineViewModel, ActivityMySelfInfoBindi
             return
         }
         mViewModel.updateUser(
-            mUser.id,
             mBinding.edtNickName.text.toString(),
             mBinding.edtPass.text.toString(),
             mAvatar

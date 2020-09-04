@@ -1,7 +1,7 @@
 package com.yk.silence.customnode.viewmodel.chat
 
 import com.yk.silence.customnode.db.friend.ChatModel
-import com.yk.silence.customnode.db.node.RoomHelper
+import com.yk.silence.customnode.db.helper.RoomHelper
 import com.yk.silence.customnode.im.IMSClientBootstrap
 import com.yk.silence.customnode.im.bean.SingleMessage
 import com.yk.silence.customnode.im.message.MessageProcessor

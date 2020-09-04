@@ -1,8 +1,8 @@
 package com.yk.silence.customnode.net.api
 
-import com.yk.silence.customnode.db.friend.FriendModel
 import com.yk.silence.customnode.model.FriendBean
 import com.yk.silence.customnode.model.UserModel
+import com.yk.silence.customnode.model.UserNodeMode
 import retrofit2.http.*
 
 interface ApiService {
@@ -68,6 +68,23 @@ interface ApiService {
     @POST("/friend/deleteFriend")
     suspend fun deleteFriend(
         @Field("id") id: Int
+    ): ApiResult<String>
+
+    /**
+     * 添加笔记
+     */
+    @POST("/Node/saveNode")
+    suspend fun addNode(
+        @Query("nodeJson") nodeJson: String,
+        @Query("imgList") imgList: String
+    ): ApiResult<UserNodeMode>
+
+    /**
+     * 删除笔记
+     */
+    @POST("/Node/deleteNode")
+    suspend fun deleteNode(
+        @Query("id") id: Int
     ): ApiResult<String>
 
 

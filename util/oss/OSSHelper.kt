@@ -16,6 +16,7 @@ import com.yk.silence.customnode.common.BUCKET_NAME
 import com.yk.silence.customnode.common.OSS_ACCESS_KEY_ID
 import com.yk.silence.customnode.common.OSS_ACCESS_KEY_SECRET
 import com.yk.silence.customnode.common.OSS_ENDPOINT
+import com.yk.silence.customnode.impl.OnFileUploadListener
 import com.yk.silence.customnode.impl.OnOssResultListener
 
 object OSSHelper {
@@ -71,5 +72,7 @@ object OSSHelper {
         })
         task.waitUntilFinished()
     }
+
+
 
 }

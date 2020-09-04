@@ -1,17 +1,13 @@
 package com.yk.silence.customnode.widget.fragment
 
-import android.util.Log
 import androidx.lifecycle.Observer
 import com.yk.silence.customnode.R
-import com.yk.silence.customnode.base.fg.BaseFragment
 import com.yk.silence.customnode.base.fg.BaseVMFragment
 import com.yk.silence.customnode.common.ActivityManager
-import com.yk.silence.customnode.common.MSG_CODE_ADD_FRIEND
 import com.yk.silence.customnode.common.MSG_CODE_UPDATE_INFO
 import com.yk.silence.customnode.databinding.FragmentMineBinding
 import com.yk.silence.customnode.model.EventModel
 import com.yk.silence.customnode.util.EventUtil
-import com.yk.silence.customnode.util.glide.GlideUtils
 import com.yk.silence.customnode.viewmodel.mine.MineViewModel
 import com.yk.silence.customnode.widget.activity.MySelfInfoActivity
 import org.greenrobot.eventbus.Subscribe
@@ -44,12 +40,6 @@ class MineFragment : BaseVMFragment<MineViewModel, FragmentMineBinding>() {
         mViewModel.run {
             mUserModel.observe(viewLifecycleOwner, Observer {
                 mBinding.user = it
-                if (it != null)
-                    GlideUtils.loadPathWithOutCache(
-                        requireActivity(),
-                        it.user_avatar,
-                        mBinding.imgMineAvatar
-                    )
             })
         }
     }

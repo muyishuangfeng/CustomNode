@@ -8,7 +8,9 @@ import com.yk.silence.customnode.common.ActivityManager
 import com.yk.silence.customnode.common.MSG_CODE_ADD_FRIEND
 import com.yk.silence.customnode.common.MSG_CODE_ADD_NODE
 import com.yk.silence.customnode.databinding.FragmentHomeBinding
+import com.yk.silence.customnode.impl.OnCommonDialogListener
 import com.yk.silence.customnode.model.EventModel
+import com.yk.silence.customnode.ui.dialog.DialogFragmentHelper
 import com.yk.silence.customnode.util.EventUtil
 import com.yk.silence.customnode.viewmodel.home.HomeViewModel
 import com.yk.silence.customnode.widget.activity.AddNodeActivity
@@ -53,8 +55,20 @@ class HomeFragment : BaseVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
             mOnItemDeleteListener = {
                 val model = mAdapter.data[it]
-                mViewModel.deleteData(model)
-                mViewModel.getData()
+                DialogFragmentHelper.commonDialog(childFragmentManager,
+                    getString(R.string.text_delete),
+                    getString(R.string.text_sure_delete_node),
+                    2,
+                    object : OnCommonDialogListener {
+                        override fun onResult() {
+                            mViewModel.deleteData(model.homeModel!!.id, model)
+                            mViewModel.getData()
+                        }
+
+                        override fun onCancel() {
+                        }
+
+                    })
             }
         }
         mBinding.rlvHome.adapter = mAdapter
@@ -74,7 +88,7 @@ class HomeFragment : BaseVMFragment<HomeViewModel, FragmentHomeBinding>() {
         super.observe()
         mViewModel.run {
             mNodeList.observe(viewLifecycleOwner, Observer {
-                mAdapter.setNewData(it)
+                mAdapter.setList(it)
             })
             mRefreshStatus.observe(viewLifecycleOwner, Observer {
                 mBinding.srlHome.isRefreshing = it

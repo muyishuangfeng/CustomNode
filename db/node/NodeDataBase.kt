@@ -4,13 +4,18 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.yk.silence.customnode.common.DATA_BASE
 import com.yk.silence.customnode.db.friend.ChatDao
 import com.yk.silence.customnode.db.friend.ChatModel
 import com.yk.silence.customnode.db.friend.FriendModel
+import com.yk.silence.customnode.db.mine.MyselfDao
+import com.yk.silence.customnode.db.mine.MyselfModel
+
 
 @Database(
-    entities = [HomeModel::class, HomePictureModel::class, FriendModel::class, ChatModel::class],
+    entities = [HomeModel::class, HomePictureModel::class, FriendModel::class, ChatModel::class, MyselfModel::class],
     version = 1,
     exportSchema = true
 )
@@ -24,6 +29,11 @@ abstract class NodeDataBase : RoomDatabase() {
      * 聊天
      */
     abstract fun chatDao(): ChatDao
+
+    /**
+     * 我的信息
+     */
+    abstract fun myselfDao(): MyselfDao
 
     companion object {
         @Volatile
@@ -42,7 +52,19 @@ abstract class NodeDataBase : RoomDatabase() {
 
         private fun buildDatabase(context: Context): NodeDataBase {
             return Room.databaseBuilder(context, NodeDataBase::class.java, DATA_BASE)
+                .addMigrations(MIGRATION_1_2)
                 .build()
         }
+
+        /**
+         * 升级数据库
+         */
+        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("CREATE TABLE tab_mine(name TEXT,avatar TEXT,link TEXT,motto TEXT,id INTEGER PRIMARY KEY)")
+            }
+        }
     }
+
+
 }

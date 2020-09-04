@@ -27,7 +27,6 @@ class MineViewModel : BaseViewModel() {
      * 更新用户信息
      */
     fun updateUser(
-        id:Int,
         username: String,
         password: String,
         user_avatar: String
@@ -35,7 +34,12 @@ class MineViewModel : BaseViewModel() {
         mUpdateState.value = false
         launch(
             block = {
-                val mUser = mMineRepository.updateUser(id,username, password, user_avatar)
+                val mUser = mMineRepository.updateUser(
+                    mUserRepository.getUserInfo()!!.id,
+                    username,
+                    password,
+                    user_avatar
+                )
                 mUserRepository.updateUserInfo(mUser)
                 mUpdateState.value = true
             },

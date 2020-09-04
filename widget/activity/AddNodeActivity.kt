@@ -1,6 +1,7 @@
 package com.yk.silence.customnode.widget.activity
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,12 +12,15 @@ import com.yk.silence.customnode.databinding.ActivityAddNodeBinding
 import com.yk.silence.customnode.db.node.HomeModel
 import com.yk.silence.customnode.db.node.HomeNode
 import com.yk.silence.customnode.db.node.HomePictureModel
+import com.yk.silence.customnode.im.CThreadPoolExecutor
 import com.yk.silence.customnode.impl.OnCameraClickListener
 import com.yk.silence.customnode.impl.OnCameraResultListener
+import com.yk.silence.customnode.impl.OnOssResultListener
 import com.yk.silence.customnode.model.EventModel
 import com.yk.silence.customnode.ui.dialog.ChooseDialogHelper
 import com.yk.silence.customnode.util.CameraUtil
 import com.yk.silence.customnode.util.EventUtil
+import com.yk.silence.customnode.util.oss.OSSHelper
 import com.yk.silence.customnode.viewmodel.home.HomeViewModel
 import com.yk.silence.customnode.widget.adapter.AddNodeAdapter
 import com.yk.silence.toolbar.CustomTitleBar
@@ -94,16 +98,14 @@ class AddNodeActivity : BaseVMActivity<HomeViewModel, ActivityAddNodeBinding>() 
         CameraUtil.onActivityResult(requestCode, resultCode, data, object : OnCameraResultListener {
             override fun onCameraResult(path: String?) {
                 if (path != null) {
-                    mPhotoList.add(path)
-                    mAdapter.setNewData(mPhotoList)
+                    uploadFile(path)
                 }
 
             }
 
             override fun onAlbumResult(path: String?) {
                 if (path != null) {
-                    mPhotoList.add(path)
-                    mAdapter.setNewData(mPhotoList)
+                    uploadFile(path)
                 }
             }
 
@@ -121,6 +123,11 @@ class AddNodeActivity : BaseVMActivity<HomeViewModel, ActivityAddNodeBinding>() 
                 EventUtil.send(EventModel(MSG_CODE_ADD_NODE))
                 ActivityManager.finish(AddNodeActivity::class.java)
             })
+            mUserNodeMode.observe(this@AddNodeActivity, Observer {
+                mViewModel.addNode(it, mPhotoList)
+            })
+
+
         }
     }
 
@@ -128,26 +135,39 @@ class AddNodeActivity : BaseVMActivity<HomeViewModel, ActivityAddNodeBinding>() 
      * 提交
      */
     private fun submit() {
-        val homeNode = HomeNode()
-        val model = HomeModel()
-        model.id = mIDNumber + 1
-        model.name = "木易"
-        model.content = edt_add_node.text.toString()
-        model.time = System.currentTimeMillis().toString()
-        val mPictures = arrayListOf<HomePictureModel>()
         if (mPhotoList.size ?: 0 > 0) {
-            for (index in mPhotoList.indices) {
-                val mPictureModel =
-                    HomePictureModel()
-                mPictureModel.imgUrl = mPhotoList[index]
-                mPictures.add(mPictureModel)
-            }
+            mViewModel.addNetNode(mPhotoList, mBinding.edtAddNode.text.toString())
         }
-        homeNode.homeModel = model
-        homeNode.pictures = mPictures
-        mViewModel.addNode(homeNode)
     }
 
+    /**
+     * 上传文件
+     */
+    private fun uploadFile(path: String) {
+        val mName = System.currentTimeMillis().toString() + ".jpg"
+        CThreadPoolExecutor.runInBackground(Runnable {
+            OSSHelper.updateFile(
+                APP.sInstance.applicationContext,
+                mName,
+                path,
+                object : OnOssResultListener {
+                    override fun onResultSuccess() {
+                        val mPhotoUrl = BASE_OSS_URL + mName
+                        runOnUiThread {
+                            mPhotoList.add(mPhotoUrl)
+                            mAdapter.setNewData(mPhotoList)
+                        }
+
+                    }
+
+                    override fun onResultFailed() {
+
+                    }
+
+                })
+        })
+
+    }
 
 }
 

@@ -7,7 +7,7 @@ import com.yk.silence.customnode.common.ActivityManager
 import com.yk.silence.customnode.common.PARAM_ARTICLE
 import com.yk.silence.customnode.db.node.HomePictureModel
 import com.yk.silence.customnode.util.glide.load
-import com.yk.silence.customnode.widget.activity.DetailActivity
+import com.yk.silence.customnode.widget.activity.PictureDetailActivity
 import kotlinx.android.synthetic.main.item_home_picture_layout.view.*
 
 class HomePictureAdapter(layoutID: Int = R.layout.item_home_picture_layout) :
@@ -22,7 +22,7 @@ class HomePictureAdapter(layoutID: Int = R.layout.item_home_picture_layout) :
             }
             setOnClickListener {
                 ActivityManager.start(
-                    DetailActivity::class.java, mapOf(
+                    PictureDetailActivity::class.java, mapOf(
                         PARAM_ARTICLE to item.imgUrl
                     ), img_item_home_picture
                 )
