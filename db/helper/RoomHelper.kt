@@ -1,12 +1,12 @@
 package com.yk.silence.customnode.db.helper
 
+import android.util.Log
 import com.yk.silence.customnode.common.APP
 import com.yk.silence.customnode.db.friend.ChatModel
 import com.yk.silence.customnode.db.friend.FriendModel
 import com.yk.silence.customnode.db.mine.MyselfModel
 import com.yk.silence.customnode.db.node.HomeNode
 import com.yk.silence.customnode.db.node.HomePictureModel
-import com.yk.silence.customnode.db.node.NodeDataBase
 
 /**
  * 数据库帮助类
@@ -154,12 +154,18 @@ object RoomHelper {
     /**
      * 插入我的信息
      */
-    suspend fun insertMineInfo(mList: List<MyselfModel>): MutableList<MyselfModel?> {
-        mList.forEach {
-            mMineDao.insertInfo(it)
-        }.apply {
-            return mMineDao.queryAllInfo()
+    suspend fun insertMineInfo(mList: MyselfModel) {
+        if (!mMineDao.isNameExit(mList.link)) {
+            mMineDao.insertInfo(mList)
         }
 
+
+    }
+
+    /**
+     * 查询我的信息
+     */
+    suspend fun queryMineInfo(): MutableList<MyselfModel> {
+        return mMineDao.queryAllInfo()
     }
 }

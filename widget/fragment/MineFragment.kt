@@ -9,6 +9,7 @@ import com.yk.silence.customnode.databinding.FragmentMineBinding
 import com.yk.silence.customnode.model.EventModel
 import com.yk.silence.customnode.util.EventUtil
 import com.yk.silence.customnode.viewmodel.mine.MineViewModel
+import com.yk.silence.customnode.widget.activity.AboutActivity
 import com.yk.silence.customnode.widget.activity.MySelfInfoActivity
 import org.greenrobot.eventbus.Subscribe
 
@@ -27,6 +28,11 @@ class MineFragment : BaseVMFragment<MineViewModel, FragmentMineBinding>() {
         EventUtil.register(this)
         mBinding.imgMineAvatar.setOnClickListener {
             ActivityManager.start(MySelfInfoActivity::class.java)
+        }
+        mBinding.txtMineAbout.setOnClickListener {
+            ActivityManager.start(AboutActivity::class.java)
+        }
+        mBinding.txtMineSetting.setOnClickListener {
         }
     }
 

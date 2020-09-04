@@ -1,4 +1,4 @@
-package com.yk.silence.customnode.db.node
+package com.yk.silence.customnode.db.helper
 
 import android.content.Context
 import androidx.room.Database
@@ -12,6 +12,9 @@ import com.yk.silence.customnode.db.friend.ChatModel
 import com.yk.silence.customnode.db.friend.FriendModel
 import com.yk.silence.customnode.db.mine.MyselfDao
 import com.yk.silence.customnode.db.mine.MyselfModel
+import com.yk.silence.customnode.db.node.HomeModel
+import com.yk.silence.customnode.db.node.HomeNodeDao
+import com.yk.silence.customnode.db.node.HomePictureModel
 
 
 @Database(
@@ -52,18 +55,26 @@ abstract class NodeDataBase : RoomDatabase() {
 
         private fun buildDatabase(context: Context): NodeDataBase {
             return Room.databaseBuilder(context, NodeDataBase::class.java, DATA_BASE)
-                .addMigrations(MIGRATION_1_2)
+                //.addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .build()
         }
 
-        /**
-         * 升级数据库
-         */
-        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("CREATE TABLE tab_mine(name TEXT,avatar TEXT,link TEXT,motto TEXT,id INTEGER PRIMARY KEY)")
-            }
-        }
+//        /**
+//         * 升级数据库
+//         */
+//        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+//            override fun migrate(database: SupportSQLiteDatabase) {
+//                database.execSQL("CREATE TABLE tab_mine(name TEXT,avatar TEXT,link TEXT,motto TEXT,id INTEGER PRIMARY KEY)")
+//            }
+//        }
+//        /**
+//         * 升级数据库
+//         */
+//        val MIGRATION_2_3: Migration = object : Migration(2, 3) {
+//            override fun migrate(database: SupportSQLiteDatabase) {
+//                database.execSQL("ALTER TABLE tab_mine ADD COLUMN mine_type TEXT")
+//            }
+//        }
     }
 
 

@@ -9,17 +9,19 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.animation.AnimationUtils
 import com.yk.silence.customnode.R
 import com.yk.silence.customnode.base.ac.BaseActivity
+import com.yk.silence.customnode.base.ac.BaseVMActivity
 import com.yk.silence.customnode.databinding.ActivityMainBinding
 import com.yk.silence.customnode.databinding.FragmentGroundBinding
 import com.yk.silence.customnode.ext.showToast
 import com.yk.silence.customnode.impl.ScrollToTop
+import com.yk.silence.customnode.viewmodel.main.MainViewModel
 import com.yk.silence.customnode.widget.fragment.ChatFragment
 import com.yk.silence.customnode.widget.fragment.GroundFragment
 import com.yk.silence.customnode.widget.fragment.HomeFragment
 import com.yk.silence.customnode.widget.fragment.MineFragment
 import java.io.InterruptedIOException
 
-class MainActivity : BaseActivity<ActivityMainBinding>() {
+class MainActivity : BaseVMActivity<MainViewModel, ActivityMainBinding>() {
 
 
     private lateinit var mFragments: Map<Int, Fragment>
@@ -28,6 +30,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private var previousTimeMillis = 0L
 
     override fun getLayoutID() = R.layout.activity_main
+
+    override fun viewModelClass() = MainViewModel::class.java
 
     override fun initSaveState(mBinding: ActivityMainBinding, savedInstanceState: Bundle?) {
         super.initSaveState(mBinding, savedInstanceState)
@@ -53,6 +57,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             mBinding.bnvMain.selectedItemId = initialItemId
             showFragment(initialItemId)
         }
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.insertData()
     }
 
 

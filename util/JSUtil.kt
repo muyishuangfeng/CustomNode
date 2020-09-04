@@ -7,7 +7,7 @@ object JSUtil {
     /**
      * 加载js，去掉掘金、简书、CSDN等H5页面的Title、底部操作栏，以及部分广告
      */
-    private fun customJs(url: String): String {
+     fun customJs(url: String): String {
         val js = StringBuilder()
         js.append("javascript:(function(){")
         when (Uri.parse(url).host) {

@@ -27,13 +27,6 @@ class AddFriendActivity : BaseVMActivity<FriendViewModel, ActivityAddFriendBindi
         super.initBinding(binding)
         mUser = intent?.getParcelableExtra(PARAM_ARTICLE) ?: return
         mBinding.friend = mUser
-        if (mUser.user_avatar != null)
-            GlideUtils.loadPathWithOutCache(
-                this,
-                mUser.user_avatar,
-                mBinding.imgAddPhoto
-            )
-
         mBinding.titleAddFriend.setTitleClickListener(object : CustomTitleBar.TitleClickListener {
             override fun onLeftClick() {
                 ActivityManager.finish(AddFriendActivity::class.java)
